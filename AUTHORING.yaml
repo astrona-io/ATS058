@@ -1,0 +1,82 @@
+version: 1
+approval: CCA requested 2026-10-11; established reading-only scope
+course:
+  id: ATS058
+  certification:
+    name: Cilium Certified Associate
+    code: CCA
+    provider: CNCF / Linux Foundation
+    domain: eBPF
+    weight: 10
+    competencies:
+    - Understand the Role of eBPF in Cilium
+    - eBPF Key Benefits
+    - eBPF-based Platforms versus IPtables-based Platforms
+defaults:
+  playground: false
+  module_lab: false
+  capstone: false
+  section_quiz: false
+  final_quiz: true
+assessment_format: YAML question banks v1, registered in assessments/index.yaml
+sections:
+- id: section-010
+  title: Understand the Role of eBPF in Cilium
+  curriculum_item: Understand the Role of eBPF in Cilium
+  capstone: false
+  section_quiz: false
+  modules:
+  - id: module-01
+    title: eBPF Hooks, Programs And Maps In Cilium
+    objectives:
+    - Explain event-driven execution at supported kernel hooks.
+    - Distinguish program logic from map state.
+    - Relate verifier and privilege requirements to loading.
+    - Identify how Cilium uses eBPF without claiming universal kernel replacement.
+    outline:
+    - eBPF Hooks, Programs And Maps In Cilium
+    playground: false
+    module_lab: false
+    sources:
+    - reading: sections/section-010/module-01/course-01-ebpf-hooks-programs-and-maps-in-cilium.md
+      adapted_from: null
+- id: section-020
+  title: eBPF Key Benefits
+  curriculum_item: eBPF Key Benefits
+  capstone: false
+  section_quiz: false
+  modules:
+  - id: module-01
+    title: eBPF Benefits And Their Practical Limits
+    objectives:
+    - Explain programmability without rebuilding an entire kernel.
+    - Relate efficient hooks and state lookup to supported networking work.
+    - Describe identity-rich observation and dynamic updates.
+    - Evaluate performance claims with workload and configuration context.
+    outline:
+    - eBPF Benefits And Their Practical Limits
+    playground: false
+    module_lab: false
+    sources:
+    - reading: sections/section-020/module-01/course-01-ebpf-benefits-and-their-practical-limits.md
+      adapted_from: null
+- id: section-030
+  title: eBPF-based Platforms versus IPtables-based Platforms
+  curriculum_item: eBPF-based Platforms versus IPtables-based Platforms
+  capstone: false
+  section_quiz: false
+  modules:
+  - id: module-01
+    title: Comparing eBPF And iptables Networking Models
+    objectives:
+    - Describe rule traversal and map-based processing conceptually.
+    - Distinguish kube-proxy replacement from every host firewall mechanism.
+    - Explain connection state and hook placement tradeoffs.
+    - Evaluate coexistence and measurements rather than universal winner claims.
+    outline:
+    - Comparing eBPF And iptables Networking Models
+    playground: false
+    module_lab: false
+    sources:
+    - reading: sections/section-030/module-01/course-01-comparing-ebpf-and-iptables-networking-models.md
+      adapted_from: null
