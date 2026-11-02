@@ -34,7 +34,7 @@ modules:
   title: Understand the Role of eBPF in Cilium
   description: Developed reading and reasoning for Understand the Role of eBPF in
     Cilium.
-  status: alpha
+  maturity: alpha
   content:
   - type: reading
     title: Understand the Role of eBPF in Cilium
@@ -72,7 +72,7 @@ modules:
 - id: module-020
   title: eBPF Key Benefits
   description: Developed reading and reasoning for eBPF Key Benefits.
-  status: alpha
+  maturity: alpha
   content:
   - type: reading
     title: eBPF Key Benefits
@@ -111,7 +111,7 @@ modules:
   title: eBPF-based Platforms versus IPtables-based Platforms
   description: Developed reading and reasoning for eBPF-based Platforms versus IPtables-based
     Platforms.
-  status: alpha
+  maturity: alpha
   content:
   - type: reading
     title: eBPF-based Platforms versus IPtables-based Platforms
