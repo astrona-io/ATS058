@@ -1,9 +1,8 @@
-# Reading-only content; YAML knowledge checks have a separate index.
 training:
   id: ATS058
   title: 'CCA: eBPF'
-  description: 'Detailed reading material and reusable YAML knowledge checks for CCA: eBPF. Technical
-    content remains draft. No labs or playgrounds.'
+  description: 'Detailed reading material and reusable YAML knowledge checks for CCA:
+    eBPF. Technical content remains draft. Private playgrounds and draft independent labs are included.'
   certification:
     name: Cilium Certified Associate
     code: CCA
@@ -33,8 +32,9 @@ modules:
     path: sections/intro/course-03-how-this-course-is-made.md
 - id: module-010
   title: Understand the Role of eBPF in Cilium
-  description: Developed reading and reasoning for Understand the Role of eBPF in Cilium.
-  draft: true
+  description: Developed reading and reasoning for Understand the Role of eBPF in
+    Cilium.
+  status: alpha
   content:
   - type: reading
     title: Understand the Role of eBPF in Cilium
@@ -46,12 +46,33 @@ modules:
     title: eBPF Hooks, Programs And Maps In Cilium
     path: sections/section-010/module-01/course-01-ebpf-hooks-programs-and-maps-in-cilium.md
   - type: reading
+    title: Inspect Agent BPF Service Maps — Task
+    path: sections/section-010/module-01/labs/lab-01/question.md
+  - type: lab
+    title: Inspect Agent BPF Service Maps
+    path: sections/section-010/module-01/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: cilium-diagnostics
+    task_kind: build
+    learning_goals:
+    - Prove the probe Service address is present in a real BPF service map.
+    tags:
+    - cca
+    - cilium-diagnostics
+  - type: reading
+    title: Inspect Agent BPF Service Maps — Solution
+    path: sections/section-010/module-01/labs/lab-01/solution.md
+  - type: reading
+    title: 'Guided Practice: Inspect Agent BPF Service Maps'
+    path: sections/section-010/module-01/course-02-guided-practice.md
+  - type: reading
     title: Summary
-    path: sections/section-010/module-01/course-02-summary.md
+    path: sections/section-010/module-01/course-03-summary.md
 - id: module-020
   title: eBPF Key Benefits
   description: Developed reading and reasoning for eBPF Key Benefits.
-  draft: true
+  status: alpha
   content:
   - type: reading
     title: eBPF Key Benefits
@@ -63,12 +84,34 @@ modules:
     title: eBPF Benefits And Their Practical Limits
     path: sections/section-020/module-01/course-01-ebpf-benefits-and-their-practical-limits.md
   - type: reading
+    title: Verify An eBPF Backed Service Path — Task
+    path: sections/section-020/module-01/labs/lab-01/question.md
+  - type: lab
+    title: Verify An eBPF Backed Service Path
+    path: sections/section-020/module-01/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: cilium-diagnostics
+    task_kind: build
+    learning_goals:
+    - Prove the probe Service address is present in a real BPF service map.
+    tags:
+    - cca
+    - cilium-diagnostics
+  - type: reading
+    title: Verify An eBPF Backed Service Path — Solution
+    path: sections/section-020/module-01/labs/lab-01/solution.md
+  - type: reading
+    title: 'Guided Practice: Verify An eBPF Backed Service Path'
+    path: sections/section-020/module-01/course-02-guided-practice.md
+  - type: reading
     title: Summary
-    path: sections/section-020/module-01/course-02-summary.md
+    path: sections/section-020/module-01/course-03-summary.md
 - id: module-030
   title: eBPF-based Platforms versus IPtables-based Platforms
-  description: Developed reading and reasoning for eBPF-based Platforms versus IPtables-based Platforms.
-  draft: true
+  description: Developed reading and reasoning for eBPF-based Platforms versus IPtables-based
+    Platforms.
+  status: alpha
   content:
   - type: reading
     title: eBPF-based Platforms versus IPtables-based Platforms
@@ -80,5 +123,26 @@ modules:
     title: Comparing eBPF And iptables Networking Models
     path: sections/section-030/module-01/course-01-comparing-ebpf-and-iptables-networking-models.md
   - type: reading
+    title: Identify The kube-proxy Boundary — Task
+    path: sections/section-030/module-01/labs/lab-01/question.md
+  - type: lab
+    title: Identify The kube-proxy Boundary
+    path: sections/section-030/module-01/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: cilium-diagnostics
+    task_kind: build
+    learning_goals:
+    - Prove the probe Service address is present in a real BPF service map.
+    tags:
+    - cca
+    - cilium-diagnostics
+  - type: reading
+    title: Identify The kube-proxy Boundary — Solution
+    path: sections/section-030/module-01/labs/lab-01/solution.md
+  - type: reading
+    title: 'Guided Practice: Identify The kube-proxy Boundary'
+    path: sections/section-030/module-01/course-02-guided-practice.md
+  - type: reading
     title: Summary
-    path: sections/section-030/module-01/course-02-summary.md
+    path: sections/section-030/module-01/course-03-summary.md
