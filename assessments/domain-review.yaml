@@ -1,0 +1,186 @@
+schema_version: 1
+kind: question_bank
+id: ats058-domain-review
+course_id: ATS058
+exam_code: CCA
+status: draft
+provenance: Original practice material; not official examination questions.
+scope:
+  type: domain
+  id: domain-review
+  title: eBPF
+placement:
+  position: after
+  reading: sections/section-030/module-01/course-02-summary.md
+questions:
+- id: ats058-domain-review-q01
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain event-driven execution at supported kernel hooks.
+  source_readings:
+  - sections/section-010/module-01/course-01-ebpf-hooks-programs-and-maps-in-cilium.md
+  prompt: When does an attached eBPF program execute?
+  options:
+  - id: a
+    text: Only during container image building.
+    explanation: Runtime networking is another lifecycle.
+  - id: b
+    text: When its supported hook is triggered.
+    explanation: Execution is tied to a kernel event or operation.
+  - id: c
+    text: Only when a dashboard is opened.
+    explanation: Presentation does not trigger every datapath hook.
+  correct_option: b
+  explanation: Execution is tied to a kernel event or operation.
+- id: ats058-domain-review-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Distinguish program logic from map state.
+  source_readings:
+  - sections/section-010/module-01/course-01-ebpf-hooks-programs-and-maps-in-cilium.md
+  prompt: What is an eBPF map used for?
+  options:
+  - id: a
+    text: Storing state consulted or updated by supported programs and control components.
+    explanation: It separates data inputs from program logic.
+  - id: b
+    text: Replacing every application database.
+    explanation: Maps have specific kernel integration roles.
+  - id: c
+    text: Providing Kubernetes user passwords universally.
+    explanation: That is not their general purpose.
+  correct_option: a
+  explanation: It separates data inputs from program logic.
+- id: ats058-domain-review-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Relate verifier and privilege requirements to loading.
+  source_readings:
+  - sections/section-010/module-01/course-01-ebpf-hooks-programs-and-maps-in-cilium.md
+  prompt: What does the verifier chiefly assess?
+  options:
+  - id: a
+    text: Whether every allowed application request is morally correct.
+    explanation: Business intent is outside its analysis.
+  - id: b
+    text: Whether all external routes exist.
+    explanation: Route topology is a separate state question.
+  - id: c
+    text: Whether the program satisfies supported execution safety constraints.
+    explanation: It is not a proof of the desired business policy.
+  correct_option: c
+  explanation: It is not a proof of the desired business policy.
+- id: ats058-domain-review-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain programmability without rebuilding an entire kernel.
+  source_readings:
+  - sections/section-020/module-01/course-01-ebpf-benefits-and-their-practical-limits.md
+  prompt: What is a practical eBPF benefit?
+  options:
+  - id: a
+    text: Automatically fixing all application bugs.
+    explanation: Its scope is not universal business correctness.
+  - id: b
+    text: Adding supported hook behavior without replacing the whole kernel.
+    explanation: It provides constrained programmability.
+  - id: c
+    text: Removing every need for kernel compatibility.
+    explanation: Compatibility remains necessary.
+  correct_option: b
+  explanation: It provides constrained programmability.
+- id: ats058-domain-review-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Relate efficient hooks and state lookup to supported networking work.
+  source_readings:
+  - sections/section-020/module-01/course-01-ebpf-benefits-and-their-practical-limits.md
+  prompt: Why can map lookups help networking implementation?
+  options:
+  - id: a
+    text: They provide structured local state for supported decisions.
+    explanation: The path can avoid some broad repeated rule traversal.
+  - id: b
+    text: They eliminate every cache and memory cost.
+    explanation: Maps still consume resources.
+  - id: c
+    text: They make every external dependency local.
+    explanation: Remote services remain remote.
+  correct_option: a
+  explanation: The path can avoid some broad repeated rule traversal.
+- id: ats058-domain-review-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Evaluate performance claims with workload and configuration context.
+  source_readings:
+  - sections/section-020/module-01/course-01-ebpf-benefits-and-their-practical-limits.md
+  prompt: How should a performance claim be evaluated?
+  options:
+  - id: a
+    text: By the technology name alone.
+    explanation: A name is not measurement evidence.
+  - id: b
+    text: By counting project logos.
+    explanation: Branding does not benchmark the path.
+  - id: c
+    text: Against the actual workload, path and enabled configuration.
+    explanation: Different operations have different costs.
+  correct_option: c
+  explanation: Different operations have different costs.
+- id: ats058-domain-review-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Describe rule traversal and map-based processing conceptually.
+  source_readings:
+  - sections/section-030/module-01/course-01-comparing-ebpf-and-iptables-networking-models.md
+  prompt: Which comparison is useful?
+  options:
+  - id: a
+    text: eBPF removes every kernel operation.
+    explanation: It runs within kernel integration.
+  - id: b
+    text: iptables rule chains and eBPF hook programs with map state have different processing models.
+    explanation: The mechanisms influence path behavior.
+  - id: c
+    text: iptables cannot ever forward working traffic.
+    explanation: It is a widely used supported mechanism.
+  correct_option: b
+  explanation: The mechanisms influence path behavior.
+- id: ats058-domain-review-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Distinguish kube-proxy replacement from every host firewall mechanism.
+  source_readings:
+  - sections/section-030/module-01/course-01-comparing-ebpf-and-iptables-networking-models.md
+  prompt: What does kube-proxy replacement principally address?
+  options:
+  - id: a
+    text: Supported Kubernetes Service handling under Cilium's configuration.
+    explanation: It does not eliminate every unrelated firewall responsibility.
+  - id: b
+    text: Every cloud security group.
+    explanation: Infrastructure filtering remains separate.
+  - id: c
+    text: Every application database connection definition.
+    explanation: Business configuration is outside that replacement.
+  correct_option: a
+  explanation: It does not eliminate every unrelated firewall responsibility.
+- id: ats058-domain-review-q09
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Evaluate coexistence and measurements rather than universal winner claims.
+  source_readings:
+  - sections/section-030/module-01/course-01-comparing-ebpf-and-iptables-networking-models.md
+  prompt: Why assess coexistence?
+  options:
+  - id: a
+    text: Only one networking mechanism can ever exist on Linux.
+    explanation: Real hosts can combine mechanisms.
+  - id: b
+    text: Every map automatically deletes all firewall rules.
+    explanation: That is not a universal behavior.
+  - id: c
+    text: Multiple mechanisms can affect one connection path.
+    explanation: Host filters and datapath processing can both matter.
+  correct_option: c
+  explanation: Host filters and datapath processing can both matter.

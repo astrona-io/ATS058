@@ -1,24 +1,19 @@
-# Curriculum And Authoring Plan
+# Curriculum Coverage
 
 Exam: Cilium Certified Associate (CCA). Domain: eBPF (10%).
-Source: [official curriculum](https://training.linuxfoundation.org/certification/cilium-certified-associate-cca/), checked 2026-10-10.
-Objectives are attributed to The Linux Foundation and CNCF.
 
-Preparation scaffold; content authoring has not started.
+The [official objectives](https://training.linuxfoundation.org/certification/cilium-certified-associate-cca/) were checked on 2026-10-11. Teaching structure is independently authored and does not add official requirements.
 
-| Section | Official objective | Authoring status |
+| Section | Official objective | Modules |
 | --- | --- | --- |
-| 010 | Understand the Role of eBPF in Cilium | Planned |
-| 020 | eBPF Key Benefits | Planned |
-| 030 | eBPF-based Platforms versus IPtables-based Platforms | Planned |
+| 010 | Understand the Role of eBPF in Cilium | 1 |
+| 020 | eBPF Key Benefits | 1 |
+| 030 | eBPF-based Platforms versus IPtables-based Platforms | 1 |
 
-Before building content:
+| Section / module | Module | Teaching files |
+| --- | --- | --- |
+| 010 / 01 | eBPF Hooks, Programs And Maps In Cilium | eBPF Hooks, Programs And Maps In Cilium |
+| 020 / 01 | eBPF Benefits And Their Practical Limits | eBPF Benefits And Their Practical Limits |
+| 030 / 01 | Comparing eBPF And iptables Networking Models | Comparing eBPF And iptables Networking Models |
 
-- Recheck the curriculum and refine broad objectives into teachable modules.
-- Choose and record the environment versions and any image dependencies.
-- Write the introduction and remove placeholder notices only when it is ready.
-- Build short parts and runnable playgrounds; add graded labs where appropriate.
-- Add quizzes and a capstone when the completed domain needs them.
-- Check real outputs and reference solutions, and update `astrona.yaml`.
-- Remove `draft: true` from completed technical pages after review.
-- Publish the course only after the maintainer approves the completed content.
+AUTHORING.yaml records measurable goals and adaptation sources. Every objective retains its section ID. All technical readings remain draft. Question banks are separate from the reading manifest and follow their declared summaries. No labs, playgrounds or runtime validation are included.
