@@ -1,0 +1,65 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-058-lab-020-cap
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+    nodes:
+      workers: 1
+    networking:
+      disableDefaultCNI: true
+      podSubnet: 10.244.0.0/16
+
+bootstrap:
+  init:
+    - name: install-cilium-and-workloads
+      description: Install Cilium and create the example application
+      type: file
+      source: bootstrap/01-setup.sh
+
+
+# Applied only by astrona test: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: hubble-running
+      description: Hubble is enabled and Hubble Relay is running
+      type: file
+      source: validation/validate-hubble-running.sh
+      hint: Upgrade the Cilium Helm release with hubble.enabled=true and hubble.relay.enabled=true and --reuse-values.
+    - name: bench-services-created
+      description: Ten Services bench-01 to bench-10 select the probe pods on port 80
+      type: file
+      source: validation/validate-bench-services-created.sh
+      hint: Each Service selects app probe, port 80, target port 8080.
+    - name: bench-services-in-map
+      description: All ten cluster IPs are frontends in the service map of every agent
+      type: file
+      source: validation/validate-bench-services-in-map.sh
+      hint: Run cilium-dbg bpf lb list in an agent pod.
+    - name: flow-to-new-service-observed
+      description: Hubble shows a FORWARDED flow from shuttle to a probe pod after a request to bench-10
+      type: file
+      source: validation/validate-flow-to-new-service-observed.sh
+      hint: Request http://bench-10.starfleet.svc/status/200 from shuttle, then run hubble observe.
+    - name: capstone-evidence-correct
+      description: The ConfigMap capstone-evidence matches the live map, flows and pod
+      type: file
+      source: validation/validate-capstone-evidence-correct.sh
+      hint: Read each value from the cluster; do not guess.
+
+teardown:
+  keepCluster: false

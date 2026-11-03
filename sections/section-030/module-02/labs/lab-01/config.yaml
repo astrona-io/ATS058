@@ -1,0 +1,65 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-058-lab-030-02
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+    nodes:
+      workers: 1
+    networking:
+      disableDefaultCNI: true
+      podSubnet: 10.244.0.0/16
+
+bootstrap:
+  init:
+    - name: install-cilium-and-workloads
+      description: Install Cilium and create the example application
+      type: file
+      source: bootstrap/01-setup.sh
+
+
+# Applied only by astrona test: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: replacement-enabled
+      description: Cilium runs with kube-proxy replacement and every agent reports it
+      type: file
+      source: validation/validate-replacement-enabled.sh
+      hint: Upgrade the Helm release with kubeProxyReplacement=true, k8sServiceHost and k8sServicePort, then restart the agents.
+    - name: kube-proxy-removed
+      description: The kube-proxy DaemonSet is deleted
+      type: file
+      source: validation/validate-kube-proxy-removed.sh
+      hint: Delete the DaemonSet kube-proxy in kube-system.
+    - name: kube-proxy-rules-cleaned
+      description: No KUBE-SVC rule is left in the iptables rules of any node
+      type: file
+      source: validation/validate-kube-proxy-rules-cleaned.sh
+      hint: Deleting kube-proxy does not delete its rules. Remove them on every node with iptables-save and iptables-restore.
+    - name: service-reachable
+      description: The shuttle pod still reaches the probe Service
+      type: file
+      source: validation/validate-service-reachable.sh
+      hint: If the request fails, check that the agents restarted and that the rules were removed.
+    - name: probe-backends-in-map
+      description: The service map of every agent lists all three probe pods as backends
+      type: file
+      source: validation/validate-probe-backends-in-map.sh
+      hint: Run cilium-dbg bpf lb list in an agent pod.
+
+teardown:
+  keepCluster: false

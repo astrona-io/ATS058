@@ -1,35 +1,24 @@
----
-draft: true
-exam_objectives:
-- Understand the Role of eBPF in Cilium
----
-# Inspect Agent BPF Service Maps
+# Read The Service Datapath From The Agent
 
-Prove the probe Service address is present in a real BPF service map.
+The `probe` Service in the `starfleet` namespace is reachable at its cluster IP. The platform team wants proof that Cilium programmed this Service into an eBPF map and that the map, not only the Kubernetes object, holds the backend that receives the traffic.
 
-## Starting state
+## Task
 
-Cilium manages the private two-node cluster. Hubble Relay and the BGP control plane are enabled. The probe and two clients are healthy; no learner policy or evidence report exists. This baseline uses kube-proxy and tunnelling.
+Collect four facts from the running cluster and record them in a ConfigMap named `datapath-evidence` in the `starfleet` namespace.
 
-Use a host shell with the private kubeconfig for this independent kind environment. A kubeconfig identifies the cluster and credentials used by kubectl, the Kubernetes command-line tool.
+| Key | Value |
+| --- | --- |
+| `probe_cluster_ip` | The cluster IP of the `probe` Service |
+| `probe_backend` | The address and port of a `probe` pod in the form `<pod IP>:8080` |
+| `agent_pod` | The name of a Cilium agent pod in `kube-system` |
+| `service_map` | The name of the IPv4 service map that the agent lists |
 
-```sh
-export KUBECONFIG="$(astrona kubeconfig ats-058-lab-010-01-01)"
-test "$(kubectl config current-context)" = "kind-astro-ats-058-lab-010-01-01" || exit 1
-node_name="astro-ats-058-lab-010-01-01-control-plane"
-worker_name="astro-ats-058-lab-010-01-01-worker"
-```
+## Constraints
 
-Keep this connection selected. Host-level commands name only this environment's node containers. They do not operate on the host operating system.
+- Read every value from the cluster. Do not type a value you have not read.
+- The ConfigMap must be in the `starfleet` namespace.
+- You may use any `probe` pod and any agent pod.
 
-## Required result
+## Check your work
 
-Read the actual Cilium service map from a node agent. The map describes programmed service state; it differs from the declarative Service API.
-
-Record observations in `starfleet/evidence`, whose `report.json` contains the stated report. The verifier reads the live API again; invented values do not pass.
-
-The report object uses these fields: `service_ip`, `map_has_service`, `kube_proxy_replacement`. Keep numeric values numeric and preserve arrays and nested objects returned by the API.
-
-## Verify The Result
-
-The grader checks the required object fields and actual observations. Wait for controller convergence before submitting. Preserve the task's namespace, workload names and unrelated components.
+Run `astrona submit` after you create the ConfigMap. The grader reads the ConfigMap and compares each value with the cluster and with the agent.

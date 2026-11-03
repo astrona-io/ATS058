@@ -1,35 +1,24 @@
----
-draft: true
-exam_objectives:
-- eBPF Key Benefits
----
-# Verify An eBPF Backed Service Path
+# Add Twenty Services And Read Them In The Service Map
 
-Prove the probe Service address is present in a real BPF service map.
+The `probe` pods serve requests on port 8080. The platform team wants to see that Cilium adds one frontend entry to the service map for each new Service, and that a new Service works without any rule being rewritten on the nodes.
 
-## Starting state
+## Task
 
-Cilium manages the private two-node cluster. Hubble Relay and the BGP control plane are enabled. The probe and two clients are healthy; no learner policy or evidence report exists. This baseline uses kube-proxy and tunnelling.
+1. Create twenty `ClusterIP` Services in the `starfleet` namespace named `bench-01` to `bench-20`. Each one selects the pods labelled `app: probe`, listens on port 80 and forwards to the target port 8080.
+2. Confirm that the cluster IP of every new Service is a frontend in the service map of the Cilium agent.
+3. Confirm that the `shuttle` pod reaches the `probe` pods through `bench-20`.
+4. Record the numbers in a ConfigMap named `bench-evidence` in `starfleet`:
 
-Use a host shell with the private kubeconfig for this independent kind environment. A kubeconfig identifies the cluster and credentials used by kubectl, the Kubernetes command-line tool.
+| Key | Value |
+| --- | --- |
+| `services_created` | The number of Services you created |
+| `frontends_in_map` | The number of those cluster IPs that you found in the map |
 
-```sh
-export KUBECONFIG="$(astrona kubeconfig ats-058-lab-020-01-01)"
-test "$(kubectl config current-context)" = "kind-astro-ats-058-lab-020-01-01" || exit 1
-node_name="astro-ats-058-lab-020-01-01-control-plane"
-worker_name="astro-ats-058-lab-020-01-01-worker"
-```
+## Constraints
 
-Keep this connection selected. Host-level commands name only this environment's node containers. They do not operate on the host operating system.
+- Create the Services with a loop, not by hand.
+- Count the frontends from the agent output, not from the number of Services.
 
-## Required result
+## Check your work
 
-Read the BPF service map and make a successful service request. eBPF changes implementation and visibility; it does not remove network policy, routing or resource constraints.
-
-Record observations in `starfleet/evidence`, whose `report.json` contains the stated report. The verifier reads the live API again; invented values do not pass.
-
-The report object uses these fields: `service_ip`, `map_has_service`, `kube_proxy_replacement`. Keep numeric values numeric and preserve arrays and nested objects returned by the API.
-
-## Verify The Result
-
-The grader checks the required object fields and actual observations. Wait for controller convergence before submitting. Preserve the task's namespace, workload names and unrelated components.
+Run `astrona submit`. The grader lists the map of every agent and sends a request through `bench-20`.

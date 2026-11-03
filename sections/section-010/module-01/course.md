@@ -3,22 +3,26 @@ draft: true
 exam_objectives:
 - Understand the Role of eBPF in Cilium
 ---
-# eBPF Hooks, Programs And Maps In Cilium
+# eBPF Programs, Hooks And Maps
 
-This module develops eBPF Hooks, Programs And Maps In Cilium. Use the explanations to connect intended behavior with responsible components and observable evidence.
+Cilium does its networking work in the Linux kernel with eBPF programs. If you do not know what such a program is, where it runs and where it keeps data, every later Cilium topic stays a black box. This module explains the building blocks: the program, the verifier that checks it, the hooks where it runs and the maps where it keeps state.
 
-## Learning Goals
+The module has two parts. The first part follows an eBPF program from source code to the kernel and explains what the verifier does and does not prove. The second part covers the hooks Cilium uses, the map types and the maps that hold Service, endpoint and policy state, and it shows you the real contents of those maps.
 
-- Explain event-driven execution at supported kernel hooks.
-- Distinguish program logic from map state.
-- Relate verifier and privilege requirements to loading.
-- Identify how Cilium uses eBPF without claiming universal kernel replacement.
+## Learning objectives
 
-## Before You Start
+After this module you can:
 
-Examples illustrate declared relationships and reasoning. No execution environment is required or claimed.
+- Describe how an eBPF program is compiled, loaded with the `bpf()` system call, verified and attached.
+- State what the verifier guarantees and what it does not guarantee.
+- Name the hooks Cilium uses (tc, XDP, socket address hooks) and what each one can see.
+- Explain what a map is and why the Cilium agent writes maps that programs read.
+- List the BPF maps of a Cilium agent and read the service map for a Kubernetes Service.
 
-## Reading Order
+## Before you start
 
-1. eBPF Hooks, Programs And Maps In Cilium
-2. Summary
+You need basic Kubernetes knowledge: pods, Services, namespaces and `kubectl`. No eBPF or C knowledge is needed.
+
+The playground is a two-node `kind` cluster with Cilium installed and Hubble Relay enabled. It runs the example application: a `probe` Deployment and Service in `starfleet`, a `shuttle` client in `starfleet` and a `drifter` client in `outpost`. You run commands as the cluster administrator, and `kubectl` already points at the playground. Launch it now and keep it open while you read:
+
+<!-- astrona:playground -->

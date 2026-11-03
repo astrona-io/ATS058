@@ -1,0 +1,15 @@
+# A NodePort Service: kube-proxy serves it at the start.
+apiVersion: v1
+kind: Service
+metadata:
+  name: probe-nodeport
+  namespace: starfleet
+spec:
+  type: NodePort
+  selector:
+    app: probe
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: 30080

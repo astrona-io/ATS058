@@ -1,5 +1,7 @@
+---
 version: 1
-approval: CCA requested 2026-10-11; established reading-only scope
+approval: Maintainer requested playgrounds and graded labs on 2026-10-13. Course rebuilt
+  with two modules per section, capstones and quizzes. All runtime behavior is UNTESTED.
 course:
   id: ATS058
   certification:
@@ -13,70 +15,81 @@ course:
     - eBPF Key Benefits
     - eBPF-based Platforms versus IPtables-based Platforms
 defaults:
-  playground: false
-  module_lab: false
-  capstone: false
-  section_quiz: false
+  playground: true
+  module_lab: true
+  capstone: true
+  section_quiz: true
   final_quiz: true
-assessment_format: YAML question banks v1, registered in assessments/index.yaml
+assessment_format: quiz.yaml per section and sections/final-domain-quiz.yaml, listed
+  in astrona.yaml
 sections:
 - id: section-010
   title: Understand the Role of eBPF in Cilium
   curriculum_item: Understand the Role of eBPF in Cilium
-  capstone: false
-  section_quiz: false
+  capstone: true
+  section_quiz: true
   modules:
   - id: module-01
-    title: eBPF Hooks, Programs And Maps In Cilium
+    title: eBPF Programs, Hooks And Maps
     objectives:
-    - Explain event-driven execution at supported kernel hooks.
-    - Distinguish program logic from map state.
-    - Relate verifier and privilege requirements to loading.
-    - Identify how Cilium uses eBPF without claiming universal kernel replacement.
-    outline:
-    - eBPF Hooks, Programs And Maps In Cilium
-    playground: false
-    module_lab: false
-    sources:
-    - reading: sections/section-010/module-01/course-01-ebpf-hooks-programs-and-maps-in-cilium.md
-      adapted_from: null
+    - Explain what the verifier proves and does not prove.
+    - Name the hooks and maps that Cilium uses.
+    - Read the service map from the agent.
+    playground: true
+    module_lab: true
+    lab: ats-058-lab-010-01
+  - id: module-02
+    title: The Cilium Agent, Identities And The Datapath
+    objectives:
+    - Explain security identities.
+    - Trace a policy to a policy map entry.
+    playground: true
+    module_lab: true
+    lab: ats-058-lab-010-02
+  capstone_lab: ats-058-lab-010-cap
 - id: section-020
   title: eBPF Key Benefits
   curriculum_item: eBPF Key Benefits
-  capstone: false
-  section_quiz: false
+  capstone: true
+  section_quiz: true
   modules:
   - id: module-01
-    title: eBPF Benefits And Their Practical Limits
+    title: Lookups, Updates And Shorter Packet Paths
     objectives:
-    - Explain programmability without rebuilding an entire kernel.
-    - Relate efficient hooks and state lookup to supported networking work.
-    - Describe identity-rich observation and dynamic updates.
-    - Evaluate performance claims with workload and configuration context.
-    outline:
-    - eBPF Benefits And Their Practical Limits
-    playground: false
-    module_lab: false
-    sources:
-    - reading: sections/section-020/module-01/course-01-ebpf-benefits-and-their-practical-limits.md
-      adapted_from: null
+    - Explain constant-time lookups and incremental updates.
+    - Describe socket load balancing, host routing and XDP.
+    playground: true
+    module_lab: true
+    lab: ats-058-lab-020-01
+  - id: module-02
+    title: Observability, Safety And Live Updates
+    objectives:
+    - Read Hubble flows.
+    - Explain why the datapath survives an agent restart.
+    playground: true
+    module_lab: true
+    lab: ats-058-lab-020-02
+  capstone_lab: ats-058-lab-020-cap
 - id: section-030
   title: eBPF-based Platforms versus IPtables-based Platforms
   curriculum_item: eBPF-based Platforms versus IPtables-based Platforms
-  capstone: false
-  section_quiz: false
+  capstone: true
+  section_quiz: true
   modules:
   - id: module-01
-    title: Comparing eBPF And iptables Networking Models
+    title: How kube-proxy Uses iptables, And Where It Stops Scaling
     objectives:
-    - Describe rule traversal and map-based processing conceptually.
-    - Distinguish kube-proxy replacement from every host firewall mechanism.
-    - Explain connection state and hook placement tradeoffs.
-    - Evaluate coexistence and measurements rather than universal winner claims.
-    outline:
-    - Comparing eBPF And iptables Networking Models
-    playground: false
-    module_lab: false
-    sources:
-    - reading: sections/section-030/module-01/course-01-comparing-ebpf-and-iptables-networking-models.md
-      adapted_from: null
+    - Trace the kube-proxy chains of a Service.
+    - Name the scaling limits of iptables.
+    playground: true
+    module_lab: true
+    lab: ats-058-lab-030-01
+  - id: module-02
+    title: Replacing kube-proxy With Cilium
+    objectives:
+    - Enable kube-proxy replacement.
+    - Remove kube-proxy and its rules.
+    playground: true
+    module_lab: true
+    lab: ats-058-lab-030-02
+  capstone_lab: ats-058-lab-030-cap

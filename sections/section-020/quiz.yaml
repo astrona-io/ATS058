@@ -1,0 +1,219 @@
+# Knowledge check for section 020. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats058-020
+course_id: ATS058
+exam_code: CCA
+status: draft
+provenance: Original practice material written for this course; not official exam
+  questions.
+scope:
+  type: section
+  id: section-020
+  title: Benefits Of eBPF In Cilium
+questions:
+- id: ats058-020-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain why a hash map lookup takes constant time and a rule
+    chain does not
+  source_readings:
+  - sections/section-020/module-01/course-01-lookups-and-updates.md
+  prompt: How does the cost of finding the backend for a new connection change when
+    the number of Services grows from 100 to 10,000?
+  options:
+  - id: a
+    text: Both models cost the same.
+    explanation: A rule chain is read in order and grows with the number of rules.
+  - id: b
+    text: It stays the same with a hash map and grows with a rule chain.
+    explanation: Correct. A hash map computes the position from the key. A rule chain
+      has no index and is read from the first rule.
+  - id: c
+    text: It shrinks in a rule chain, because later rules are cached.
+    explanation: There is no such caching in a chain.
+  - id: d
+    text: It grows only with a hash map.
+    explanation: A hash map lookup does not depend on the number of entries.
+  correct_option: b
+  explanation: A hash map computes the position from the key. A rule chain has no
+    index and is read from the first rule.
+- id: ats058-020-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Describe how Cilium updates the datapath when a Service changes
+  source_readings:
+  - sections/section-020/module-01/course-01-lookups-and-updates.md
+  prompt: A new pod becomes a backend of the `probe` Service. What does the Cilium
+    agent write?
+  options:
+  - id: a
+    text: The whole rule set of the node is rebuilt and loaded.
+    explanation: That describes the rule-chain model.
+  - id: b
+    text: A new kernel module is compiled and loaded.
+    explanation: Cilium needs no kernel module.
+  - id: c
+    text: It reboots the node.
+    explanation: No reboot is needed.
+  - id: d
+    text: Only the new backend entry and the changed backend count, with `bpf()` calls
+      on the map.
+    explanation: Correct. The agent changes only the affected entries, so other Services
+      are not touched.
+  correct_option: d
+  explanation: The agent changes only the affected entries, so other Services are
+    not touched.
+- id: ats058-020-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain what socket-level load balancing removes from the packet
+    path
+  source_readings:
+  - sections/section-020/module-01/course-02-shorter-packet-paths.md
+  prompt: What does socket load balancing remove for a connection from a pod to a
+    cluster IP?
+  options:
+  - id: a
+    text: The need for destination NAT on each packet of the connection.
+    explanation: Correct. The program replaces the cluster IP at connect(), so packets
+      carry the pod address from the first packet.
+  - id: b
+    text: The need for a network between nodes.
+    explanation: The packets still cross the network.
+  - id: c
+    text: The policy check at the destination pod.
+    explanation: Policy is still enforced.
+  - id: d
+    text: The need for a Service object.
+    explanation: The Service object is still the source of the map entry.
+  correct_option: a
+  explanation: The program replaces the cluster IP at connect(), so packets carry
+    the pod address from the first packet.
+- id: ats058-020-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Determine which datapath features a node runs
+  source_readings:
+  - sections/section-020/module-01/course-02-shorter-packet-paths.md
+  prompt: Two nodes run the same Cilium version on different kernels. How do you find
+    out whether eBPF host routing is active on each?
+  options:
+  - id: a
+    text: Read the Helm values only, because they are the same on both nodes.
+    explanation: Cilium can fall back on a node that cannot support a feature.
+  - id: b
+    text: Read the Dockerfile of the agent image.
+    explanation: The image does not show node capabilities.
+  - id: c
+    text: Read `cilium-dbg status` in the agent of each node.
+    explanation: Correct. The agent status shows the features the agent enabled on
+      its node, and it can differ between nodes.
+  - id: d
+    text: Assume the feature is active everywhere.
+    explanation: The kernel and the configuration decide.
+  correct_option: c
+  explanation: The agent status shows the features the agent enabled on its node,
+    and it can differ between nodes.
+- id: ats058-020-q05
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Name the parts of Hubble and what each does
+  source_readings:
+  - sections/section-020/module-02/course-01-observability-with-hubble.md
+  prompt: What does Hubble Relay do?
+  options:
+  - id: a
+    text: It runs the eBPF programs.
+    explanation: The programs run in the kernel.
+  - id: b
+    text: It stores policy rules.
+    explanation: Policy is resolved by the agent.
+  - id: c
+    text: It replaces the Cilium agent on a node.
+    explanation: The agent keeps running.
+  - id: d
+    text: It connects to the Hubble server of every agent and offers the flows of
+      the whole cluster.
+    explanation: Correct. The Hubble server in each agent serves one node. Relay combines
+      them.
+  correct_option: d
+  explanation: The Hubble server in each agent serves one node. Relay combines them.
+- id: ats058-020-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Read a Hubble flow and its limits
+  source_readings:
+  - sections/section-020/module-02/course-01-observability-with-hubble.md
+  prompt: "`hubble observe` run in one agent pod does not show a flow that you sent
+    a minute ago. What is a likely reason?"
+  options:
+  - id: a
+    text: The flow was sent to a pod on another node, or the ring of recent flows
+      already overwrote it.
+    explanation: Correct. An agent shows the flows of its own node, and it keeps only
+      a limited number of recent flows.
+  - id: b
+    text: Hubble stores flows only after a node reboot.
+    explanation: Flows are served from memory while the agent runs.
+  - id: c
+    text: Hubble can only show dropped flows.
+    explanation: It shows forwarded flows as well.
+  - id: d
+    text: The Kubernetes API deleted the flow.
+    explanation: Flows do not live in the Kubernetes API.
+  correct_option: a
+  explanation: An agent shows the flows of its own node, and it keeps only a limited
+    number of recent flows.
+- id: ats058-020-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Describe what keeps running when the agent restarts
+  source_readings:
+  - sections/section-020/module-02/course-02-safety-live-updates-and-agent-restart.md
+  prompt: The Cilium agent pod on a node restarts. What happens to established connections
+    between pods on that node?
+  options:
+  - id: a
+    text: They are all dropped, because the agent owns the datapath.
+    explanation: The kernel holds the programs and maps.
+  - id: b
+    text: Forwarding continues with the programs and maps already in the kernel, and
+      changes wait until the agent returns.
+    explanation: Correct. The kernel keeps the attached programs and the pinned maps,
+      so forwarding continues. New changes are not applied until the agent is back.
+  - id: c
+    text: The node reboots.
+    explanation: No reboot happens.
+  - id: d
+    text: They continue and new policies also apply immediately.
+    explanation: New policy changes need the agent.
+  correct_option: b
+  explanation: The kernel keeps the attached programs and the pinned maps, so forwarding
+    continues. New changes are not applied until the agent is back.
+- id: ats058-020-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Enable Hubble on a running cluster
+  source_readings:
+  - sections/section-020/module-02/course-01-observability-with-hubble.md
+  prompt: You run `helm upgrade` with `hubble.enabled=true` and `hubble.relay.enabled=true`
+    on a running release. Which option keeps the other settings?
+  options:
+  - id: a
+    text: "`--reuse-values`"
+    explanation: Correct. `--reuse-values` keeps the values of the existing release.
+      The change restarts the agents.
+  - id: b
+    text: "`--reset-values`"
+    explanation: This resets the release to the chart defaults.
+  - id: c
+    text: "`--dry-run`"
+    explanation: This does not apply the change.
+  - id: d
+    text: "`--uninstall`"
+    explanation: This is not an option of the upgrade command and would remove the
+      release.
+  correct_option: a
+  explanation: "`--reuse-values` keeps the values of the existing release. The change
+    restarts the agents."

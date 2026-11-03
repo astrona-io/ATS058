@@ -1,0 +1,60 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-058-lab-020-02
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+    nodes:
+      workers: 1
+    networking:
+      disableDefaultCNI: true
+      podSubnet: 10.244.0.0/16
+
+bootstrap:
+  init:
+    - name: install-cilium-and-workloads
+      description: Install Cilium and create the example application
+      type: file
+      source: bootstrap/01-setup.sh
+
+
+# Applied only by astrona test: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: hubble-running
+      description: Hubble is enabled and Hubble Relay is running
+      type: file
+      source: validation/validate-hubble-running.sh
+      hint: Upgrade the Cilium Helm release with hubble.enabled=true and hubble.relay.enabled=true, and keep the other values with --reuse-values.
+    - name: forwarded-flow-observed
+      description: Hubble shows a FORWARDED flow from shuttle to probe
+      type: file
+      source: validation/validate-forwarded-flow-observed.sh
+      hint: Send a request from shuttle, then run hubble observe inside a Cilium agent pod.
+    - name: dropped-flow-observed
+      description: Hubble shows a DROPPED flow from drifter to probe with the reason Policy denied
+      type: file
+      source: validation/validate-dropped-flow-observed.sh
+      hint: Send a request from drifter. The policy probe-from-shuttle drops it.
+    - name: flow-evidence-correct
+      description: The ConfigMap flow-evidence names the forwarded client, the dropped client and the drop reason
+      type: file
+      source: validation/validate-flow-evidence-correct.sh
+      hint: Store forwarded_client, dropped_client and drop_reason exactly as Hubble prints them.
+
+teardown:
+  keepCluster: false

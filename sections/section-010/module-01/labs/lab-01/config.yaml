@@ -1,11 +1,12 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
 apiVersion: astrona.io/v1
 metadata:
-  name: ats-058-lab-010-01-01
+  name: ats-058-lab-010-01
   docs:
-    prerequisites: docs/prerequisites.md
-    examQuestion: question.md
-    caseStudy: docs/case-study.md
-    guide: solution.md
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
 runtime:
   type: kind
   kind:
@@ -15,20 +16,50 @@ runtime:
     networking:
       disableDefaultCNI: true
       podSubnet: 10.244.0.0/16
+
 bootstrap:
   init:
-  - name: seed-private-environment
-    type: file
-    source: bootstrap/setup.sh
-teardown:
-  keepCluster: false
+    - name: install-cilium-and-workloads
+      description: Install Cilium and create the example application
+      type: file
+      source: bootstrap/01-setup.sh
+
+
+# Applied only by astrona test: the reference solution.
 testing:
   init:
-  - name: reference-result
-    type: file
-    source: solution/apply.sh
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
 validation:
-  script:
-    name: verify-fields-and-live-evidence
-    type: file
-    source: validate.sh
+  scripts:
+    - name: evidence-recorded
+      description: The ConfigMap datapath-evidence has the four required keys
+      type: file
+      source: validation/validate-evidence-recorded.sh
+      hint: Create the ConfigMap in starfleet with the keys probe_cluster_ip, probe_backend, agent_pod and service_map.
+    - name: service-address-correct
+      description: probe_cluster_ip is the real cluster IP of the probe Service
+      type: file
+      source: validation/validate-service-address-correct.sh
+      hint: Read the address with kubectl -n starfleet get service probe.
+    - name: backend-address-correct
+      description: probe_backend is the real address of the probe pod, with port 8080
+      type: file
+      source: validation/validate-backend-address-correct.sh
+      hint: Read the pod IP with kubectl -n starfleet get pods -l app=probe -o wide and add :8080.
+    - name: agent-map-confirms-service
+      description: The named agent lists both addresses in its service map
+      type: file
+      source: validation/validate-agent-map-confirms-service.sh
+      hint: Run cilium-dbg bpf lb list inside the Cilium pod you name in agent_pod.
+    - name: service-map-name-correct
+      description: service_map names the real BPF map that holds IPv4 services
+      type: file
+      source: validation/validate-service-map-name-correct.sh
+      hint: Run cilium-dbg map list inside the agent and look for the map with lb4_services in its name.
+
+teardown:
+  keepCluster: false

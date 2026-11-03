@@ -1,11 +1,12 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
 apiVersion: astrona.io/v1
 metadata:
-  name: ats-058-lab-020-01-01
+  name: ats-058-lab-020-01
   docs:
-    prerequisites: docs/prerequisites.md
-    examQuestion: question.md
-    caseStudy: docs/case-study.md
-    guide: solution.md
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
 runtime:
   type: kind
   kind:
@@ -15,20 +16,45 @@ runtime:
     networking:
       disableDefaultCNI: true
       podSubnet: 10.244.0.0/16
+
 bootstrap:
   init:
-  - name: seed-private-environment
-    type: file
-    source: bootstrap/setup.sh
-teardown:
-  keepCluster: false
+    - name: install-cilium-and-workloads
+      description: Install Cilium and create the example application
+      type: file
+      source: bootstrap/01-setup.sh
+
+
+# Applied only by astrona test: the reference solution.
 testing:
   init:
-  - name: reference-result
-    type: file
-    source: solution/apply.sh
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
 validation:
-  script:
-    name: verify-fields-and-live-evidence
-    type: file
-    source: validate.sh
+  scripts:
+    - name: bench-services-created
+      description: Twenty Services bench-01 to bench-20 select the probe pods on port 80
+      type: file
+      source: validation/validate-bench-services-created.sh
+      hint: Create the Services with a loop. Each one selects app probe and uses port 80 and target port 8080.
+    - name: bench-services-in-map
+      description: All twenty cluster IPs are frontends in the service map of every agent
+      type: file
+      source: validation/validate-bench-services-in-map.sh
+      hint: Wait a few seconds, then run cilium-dbg bpf lb list in an agent pod.
+    - name: bench-service-reachable
+      description: The shuttle pod reaches the probe through bench-20
+      type: file
+      source: validation/validate-bench-service-reachable.sh
+      hint: Request http://bench-20.starfleet.svc/status/200 from the shuttle pod.
+    - name: bench-evidence-correct
+      description: The ConfigMap bench-evidence records twenty Services and twenty frontends
+      type: file
+      source: validation/validate-bench-evidence-correct.sh
+      hint: Count the bench cluster IPs you found in the map and store the numbers in services_created and frontends_in_map.
+
+teardown:
+  keepCluster: false

@@ -1,0 +1,216 @@
+# Knowledge check for section 030. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats058-030
+course_id: ATS058
+exam_code: CCA
+status: draft
+provenance: Original practice material written for this course; not official exam
+  questions.
+scope:
+  type: section
+  id: section-030
+  title: Limits Of iptables And kube-proxy
+questions:
+- id: ats058-030-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Name the NAT chains kube-proxy uses for a Service
+  source_readings:
+  - sections/section-030/module-01/course-01-netfilter-and-kube-proxy-chains.md
+  prompt: In which order does a new connection to a cluster IP pass the kube-proxy
+    chains?
+  options:
+  - id: a
+    text: KUBE-SEP, then KUBE-SVC, then KUBE-SERVICES.
+    explanation: This is the reverse order.
+  - id: b
+    text: KUBE-SERVICES, then KUBE-SVC, then KUBE-SEP.
+    explanation: Correct. The entry chain matches the cluster IP and jumps to the
+      Service chain. The Service chain picks a backend chain, which rewrites the destination.
+  - id: c
+    text: KUBE-SVC only.
+    explanation: The entry chain is needed to match the cluster IP.
+  - id: d
+    text: KUBE-SEP only.
+    explanation: The Service chain picks the backend first.
+  correct_option: b
+  explanation: The entry chain matches the cluster IP and jumps to the Service chain.
+    The Service chain picks a backend chain, which rewrites the destination.
+- id: ats058-030-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain how kube-proxy spreads connections across backends
+  source_readings:
+  - sections/section-030/module-01/course-01-netfilter-and-kube-proxy-chains.md
+  prompt: How does a `KUBE-SVC` chain with three backends select one of them?
+  options:
+  - id: a
+    text: It reads the load of each pod.
+    explanation: The rules do not read pod load.
+  - id: b
+    text: Each backend rule except the last matches with a probability, and the last
+      rule takes the rest.
+    explanation: Correct. The first rule matches with a probability of one third,
+      the second with one half of the rest, and the last takes the rest.
+  - id: c
+    text: It always chooses the oldest pod.
+    explanation: There is no such rule.
+  - id: d
+    text: It asks the Kubernetes API for each connection.
+    explanation: The kernel does not call the API.
+  correct_option: b
+  explanation: The first rule matches with a probability of one third, the second
+    with one half of the rest, and the last takes the rest.
+- id: ats058-030-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Find the chain of a Service reliably
+  source_readings:
+  - sections/section-030/module-01/course-01-netfilter-and-kube-proxy-chains.md
+  prompt: A script must find the chain of the `probe` Service port `http` in any cluster.
+    What should it use?
+  options:
+  - id: a
+    text: The comment `starfleet/probe:http cluster IP` on the rule in `KUBE-SERVICES`.
+    explanation: Correct. The suffix of a chain name is a hash that differs between
+      clusters. The comment names the Service and port.
+  - id: b
+    text: A fixed chain name copied from another cluster.
+    explanation: The hash differs between clusters.
+  - id: c
+    text: The node name.
+    explanation: The node name is not part of the rule.
+  - id: d
+    text: The pod name of kube-proxy.
+    explanation: The pod name does not identify the Service.
+  correct_option: a
+  explanation: The suffix of a chain name is a hash that differs between clusters.
+    The comment names the Service and port.
+- id: ats058-030-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Describe the scaling limits of the iptables model
+  source_readings:
+  - sections/section-030/module-01/course-02-scaling-limits-of-iptables.md
+  prompt: Why does a new connection to the last Service in a large cluster take more
+    work than one to the first Service?
+  options:
+  - id: a
+    text: The entry chain is read in order and has no index.
+    explanation: Correct. The kernel compares the packet with the rules of the entry
+      chain from the first rule, so the cost grows with the position.
+  - id: b
+    text: Later Services use a slower network card.
+    explanation: The network card is not part of the rule walk.
+  - id: c
+    text: Kubernetes sorts Services by age.
+    explanation: This does not change the rule walk.
+  - id: d
+    text: Conntrack stores only the last Service.
+    explanation: Conntrack stores each connection.
+  correct_option: a
+  explanation: The kernel compares the packet with the rules of the entry chain from
+    the first rule, so the cost grows with the position.
+- id: ats058-030-q05
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Explain why k8sServiceHost and k8sServicePort are needed
+  source_readings:
+  - sections/section-030/module-02/course-01-kube-proxy-replacement.md
+  prompt: Why must you set `k8sServiceHost` and `k8sServicePort` when Cilium replaces
+    kube-proxy?
+  options:
+  - id: a
+    text: They set the port of the Hubble UI.
+    explanation: They are about the API server.
+  - id: b
+    text: They choose the node port range.
+    explanation: The node port range is another setting.
+  - id: c
+    text: The agent must reach the API server directly, because the `kubernetes` Service
+      is translated by kube-proxy, which is gone.
+    explanation: Correct. Without kube-proxy, the agent cannot rely on the translation
+      of the in-cluster API Service to start, so it connects to the API server address
+      directly.
+  - id: d
+    text: They set the Service CIDR.
+    explanation: They do not set a CIDR.
+  correct_option: c
+  explanation: Without kube-proxy, the agent cannot rely on the translation of the
+    in-cluster API Service to start, so it connects to the API server address directly.
+- id: ats058-030-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Clean up after deleting kube-proxy
+  source_readings:
+  - sections/section-030/module-02/course-02-migration-and-cleanup.md
+  prompt: You delete the `kube-proxy` DaemonSet. What happens to the iptables rules
+    it wrote?
+  options:
+  - id: a
+    text: They are removed automatically with the DaemonSet.
+    explanation: Nothing deletes them.
+  - id: b
+    text: They are moved into eBPF maps.
+    explanation: Rules are not converted.
+  - id: c
+    text: They stay on the node until someone removes them or the node reboots.
+    explanation: Correct. Deleting the DaemonSet removes the pods, not the rules in
+      the kernel.
+  - id: d
+    text: They are replaced by one rule that blocks all traffic.
+    explanation: No such rule is created.
+  correct_option: c
+  explanation: Deleting the DaemonSet removes the pods, not the rules in the kernel.
+- id: ats058-030-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Verify that Cilium handles Services
+  source_readings:
+  - sections/section-030/module-02/course-01-kube-proxy-replacement.md
+  prompt: Which two observations best prove that an agent handles a Service in kube-proxy
+    replacement mode?
+  options:
+  - id: a
+    text: The Helm value is true and the Service has a cluster IP.
+    explanation: An agent that did not restart still runs the old setting.
+  - id: b
+    text: The `KubeProxyReplacement` status line and the Service entries in `cilium-dbg
+      bpf lb list`.
+    explanation: Correct. The agent reports its mode in the status, and the map shows
+      the Services it handles.
+  - id: c
+    text: The pod is Running and has a label.
+    explanation: This says nothing about Service handling.
+  - id: d
+    text: The node has two network interfaces.
+    explanation: This is unrelated.
+  correct_option: b
+  explanation: The agent reports its mode in the status, and the map shows the Services
+    it handles.
+- id: ats058-030-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Describe the connection tracking limit
+  source_readings:
+  - sections/section-030/module-01/course-02-scaling-limits-of-iptables.md
+  prompt: A node that opens many short connections starts to drop new connections
+    and writes a kernel log message. Which limit is a likely cause?
+  options:
+  - id: a
+    text: The size of the Kubernetes etcd database.
+    explanation: This does not drop packets on a node.
+  - id: b
+    text: The number of Helm releases.
+    explanation: This is unrelated to packet handling.
+  - id: c
+    text: The size of the container image.
+    explanation: Image size does not affect connections.
+  - id: d
+    text: The maximum size of the connection tracking table.
+    explanation: Correct. The conntrack table has a fixed maximum. When it is full,
+      new connections are dropped.
+  correct_option: d
+  explanation: The conntrack table has a fixed maximum. When it is full, new connections
+    are dropped.

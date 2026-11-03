@@ -1,10 +1,23 @@
----
-draft: true
-exam_objectives:
-- eBPF-based Platforms versus IPtables-based Platforms
----
-# Identify The kube-proxy Boundary
+# Lab: Find The kube-proxy Rules Of The probe Service
 
-Prove the probe Service address is present in a real BPF service map.
+Status: UNTESTED. This lab was built with static checks only (`astrona validate`, `bash -n`). It has not been run against a live cluster, so the grading scripts and the reference solution still need a real run.
 
-The task and solution use a separate pinned kind cluster. Run `testing/smoke.sh` with its private kubeconfig to verify initial rejection and reference success. Static validation is not live evidence. Runtime verification remains pending.
+## Files
+
+- `config.yaml`: lab definition (cluster, bootstrap, validation, teardown).
+- `bootstrap/01-setup.sh`: installs Cilium from a checksum-verified chart and applies the manifests.
+- `manifests/`: the example application and the starting state.
+- `validation/`: one grading script per check.
+- `solution/apply.sh`: reference solution, run only by `astrona test`.
+- `question.md`, `solution.md`, `prerequisites.md`: learner documents.
+
+## Checks
+
+- `evidence-recorded`, `service-chain-correct`, `backend-count-correct`.
+
+The comment text `starfleet/probe:http cluster IP` and the label `k8s-app=kube-proxy` are not verified on a live cluster (open item).
+
+## Open items
+
+- Run `astrona test` against a real cluster and record the result.
+- Confirm command output formats that the grading scripts parse (marked in the scripts).

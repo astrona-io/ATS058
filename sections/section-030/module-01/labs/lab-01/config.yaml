@@ -1,11 +1,12 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
 apiVersion: astrona.io/v1
 metadata:
-  name: ats-058-lab-030-01-01
+  name: ats-058-lab-030-01
   docs:
-    prerequisites: docs/prerequisites.md
-    examQuestion: question.md
-    caseStudy: docs/case-study.md
-    guide: solution.md
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
 runtime:
   type: kind
   kind:
@@ -15,20 +16,40 @@ runtime:
     networking:
       disableDefaultCNI: true
       podSubnet: 10.244.0.0/16
+
 bootstrap:
   init:
-  - name: seed-private-environment
-    type: file
-    source: bootstrap/setup.sh
-teardown:
-  keepCluster: false
+    - name: install-cilium-and-workloads
+      description: Install Cilium and create the example application
+      type: file
+      source: bootstrap/01-setup.sh
+
+
+# Applied only by astrona test: the reference solution.
 testing:
   init:
-  - name: reference-result
-    type: file
-    source: solution/apply.sh
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
 validation:
-  script:
-    name: verify-fields-and-live-evidence
-    type: file
-    source: validate.sh
+  scripts:
+    - name: evidence-recorded
+      description: The ConfigMap iptables-evidence has the three required keys
+      type: file
+      source: validation/validate-evidence-recorded.sh
+      hint: Create the ConfigMap in starfleet with probe_cluster_ip, service_chain and backend_chain_count.
+    - name: service-chain-correct
+      description: service_chain is the kube-proxy chain of the probe Service
+      type: file
+      source: validation/validate-service-chain-correct.sh
+      hint: Run iptables-save -t nat inside a kube-proxy pod and find the rule with the comment starfleet/probe:http cluster IP.
+    - name: backend-count-correct
+      description: backend_chain_count is the number of KUBE-SEP chains that the Service chain jumps to
+      type: file
+      source: validation/validate-backend-count-correct.sh
+      hint: Count the rules in the Service chain that jump to a KUBE-SEP chain. There is one per probe pod.
+
+teardown:
+  keepCluster: false

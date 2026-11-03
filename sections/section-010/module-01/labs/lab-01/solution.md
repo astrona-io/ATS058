@@ -1,86 +1,56 @@
----
-draft: true
-exam_objectives:
-- Understand the Role of eBPF in Cilium
----
-# Inspect Agent BPF Service Maps Solution
+# Solution
 
-Use a host shell with the private kubeconfig for this independent kind environment. A kubeconfig identifies the cluster and credentials used by kubectl, the Kubernetes command-line tool.
+The task needs four values. Two come from Kubernetes objects and two come from the Cilium agent.
 
-```sh
-export KUBECONFIG="$(astrona kubeconfig ats-058-lab-010-01-01)"
-test "$(kubectl config current-context)" = "kind-astro-ats-058-lab-010-01-01" || exit 1
-node_name="astro-ats-058-lab-010-01-01-control-plane"
-worker_name="astro-ats-058-lab-010-01-01-worker"
-```
+## Step 1: Find the agent pod
 
-Keep this connection selected. Host-level commands name only this environment's node containers. They do not operate on the host operating system.
-
-## Inspect And Explain
-
-Cilium manages the private two-node cluster. Hubble Relay and the BGP control plane are enabled. The probe and two clients are healthy; no learner policy or evidence report exists. This baseline uses kube-proxy and tunnelling.
-
-Inspect the current objects before changing them:
+The agents run as the `cilium` DaemonSet in `kube-system`. Save the name of the first agent pod:
 
 ```sh
-kubectl -n starfleet get pods -o wide
-kubectl get nodes -o wide
+AGENT=$(kubectl -n kube-system get pods -l k8s-app=cilium -o jsonpath='{.items[0].metadata.name}')
+echo "$AGENT"
 ```
 
-Read the actual Cilium service map from a node agent. The map describes programmed service state; it differs from the declarative Service API.
+## Step 2: Read the Service and the pod
 
-Record observations in `starfleet/evidence`, whose `report.json` contains the stated report. The verifier reads the live API again; invented values do not pass.
-
-
-Save this as `record.py`:
-
-```python
-import json,subprocess,time,sys,tempfile,os
-
-def call(*args):
- r=subprocess.run(list(args),text=True,capture_output=True,timeout=20)
- assert r.returncode==0, 'Observation command failed: '+args[0]
- return r.stdout.strip()
-def obj(kind,name,ns='starfleet'):
- return json.loads(call('kubectl',*(['-n',ns] if ns else []),'get',kind,name,'-o','json'))
-def api(path):
- script='import urllib.request; print(urllib.request.urlopen('+repr('http://prometheus:9090'+path)+',timeout=8).read().decode())'
- return json.loads(call('kubectl','-n','starfleet','exec','shuttle','--','python','-c',script))
-def save(data):
- resource={'apiVersion':'v1','kind':'ConfigMap','metadata':{'name':'evidence','namespace':'starfleet'},'data':{'report.json':json.dumps(data,sort_keys=True)}}
- with tempfile.NamedTemporaryFile(mode='w',suffix='.json',delete=False) as f:json.dump(resource,f);path=f.name
- try:call('kubectl','apply','-f',path)
- finally:os.unlink(path)
-
-assert call('kubectl','config','current-context') == 'kind-astro-ats-058-lab-010-01-01'
-pods=json.loads(call('kubectl','-n','kube-system','get','pods','-l','k8s-app=cilium','-o','json'))['items']
-pod=sorted(p['metadata']['name'] for p in pods)[0]
-text=call('kubectl','-n','kube-system','exec',pod,'--','cilium-dbg','bpf','lb','list')
-service=obj('service','probe');assert service['spec']['clusterIP'] in text
-report={'service_ip':service['spec']['clusterIP'],'map_has_service':True,'kube_proxy_replacement':obj('configmap','cilium-config','kube-system')['data']['kube-proxy-replacement']}
-save(report)
-```
-
-Apply the scoped correction:
+The cluster IP is a field of the Service. The pod IP is a field of the pod status:
 
 ```sh
-python3 record.py
+SERVICE_IP=$(kubectl -n starfleet get service probe -o jsonpath='{.spec.clusterIP}')
+POD_IP=$(kubectl -n starfleet get pods -l app=probe -o jsonpath='{.items[0].status.podIP}')
+echo "$SERVICE_IP" "$POD_IP"
 ```
 
-## Verify The Result
+The container port of `probe` is 8080, so the backend is the pod IP with `:8080`.
 
-Observe the actual result. A denied request returns a nonzero status when the denial works, so run it separately from a shell sequence that stops on error. Status convergence and a successful request establish different parts of the result.
+## Step 3: Find the service map name
+
+List the maps that the agent has open and keep the IPv4 service map:
 
 ```sh
-kubectl -n starfleet get configmaps
-kubectl -n starfleet get deployment probe -o yaml
+kubectl -n kube-system exec "$AGENT" -c cilium-agent -- cilium-dbg map list
 ```
 
-Prove the probe Service address is present in a real BPF service map. The commands above deliberately target one environment. Keep its remaining components available so an unrelated failure cannot stand in for the required denial or correction. No example command output is presented as evidence of a completed run. A matching field alone does not establish that a process used it or that a controller reconciled it.
+Find the row whose name contains `lb4_services` and copy the name from that row.
 
-After recording your result, remove the independent lab with `astrona destroy ats-058-lab-010-01-01`.
+## Step 4: Confirm the map holds the Service
 
-## Common pitfalls
+Print the frontends and backends and look for the cluster IP with port 80 and for the pod IP with port 8080:
 
-> [!WARNING]
-> Confirm the private context and exact node names before a change. Check the stated scope and live result. Do not change unrelated components to hide the original fault.
+```sh
+kubectl -n kube-system exec "$AGENT" -c cilium-agent -- cilium-dbg bpf lb list
+```
+
+## Step 5: Record the evidence
+
+Replace `<MAP>` with the map name from step 3:
+
+```sh
+kubectl -n starfleet create configmap datapath-evidence \
+  --from-literal=probe_cluster_ip="$SERVICE_IP" \
+  --from-literal=probe_backend="${POD_IP}:8080" \
+  --from-literal=agent_pod="$AGENT" \
+  --from-literal=service_map="<MAP>"
+```
+
+Then run `astrona submit`.

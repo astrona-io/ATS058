@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
+# Reference solution.
 set -euo pipefail
-if [[ "$(kubectl config current-context)" != "kind-astro-ats-058-lab-030-01-01" ]]; then
-  printf 'Refusing to operate on another Kubernetes context\n' >&2
-  exit 1
-fi
-lab_directory="$(cd "$(dirname "$0")/.." && pwd)"
-solution_directory="$lab_directory/solution"
-node_name="astro-ats-058-lab-030-01-01-control-plane"
-worker_name="astro-ats-058-lab-030-01-01-worker"
-
-python3 "$solution_directory/record.py"
+proxy="$(kubectl -n kube-system get pods -l k8s-app=kube-proxy -o jsonpath='{.items[0].metadata.name}')"
+rules="$(kubectl -n kube-system exec "$proxy" -- iptables-save -t nat)"
+chain="$(grep -- 'starfleet/probe:http cluster IP' <<<"$rules" | sed -n 's/.*-j \(KUBE-SVC-[A-Z0-9]*\).*/\1/p' | head -n 1)"
+count="$(grep -c -- "^-A ${chain} .*-j KUBE-SEP-" <<<"$rules")"
+kubectl -n starfleet create configmap iptables-evidence \
+  --from-literal=probe_cluster_ip="$(kubectl -n starfleet get service probe -o jsonpath='{.spec.clusterIP}')" \
+  --from-literal=service_chain="$chain" --from-literal=backend_chain_count="$count" \
+  --dry-run=client -o yaml | kubectl apply -f -

@@ -1,0 +1,19 @@
+# Starting fault: the policy allows shuttle on port 80, the Service port. A
+# policy matches the pod port, 8080, so shuttle is dropped.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: probe-ingress
+  namespace: starfleet
+spec:
+  endpointSelector:
+    matchLabels:
+      app: probe
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app: shuttle
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP

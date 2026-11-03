@@ -1,0 +1,227 @@
+# Knowledge check for section 010. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats058-010
+course_id: ATS058
+exam_code: CCA
+status: draft
+provenance: Original practice material written for this course; not official exam
+  questions.
+scope:
+  type: section
+  id: section-010
+  title: How eBPF Works In Cilium
+questions:
+- id: ats058-010-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: State what the eBPF verifier guarantees and what it does not
+  source_readings:
+  - sections/section-010/module-01/course-01-programs-verifier-and-loading.md
+  prompt: A developer submits an eBPF program that allows every connection in the
+    cluster. The kernel loads it without an error. What does this show?
+  options:
+  - id: a
+    text: The program is a correct policy, because the verifier checks the intent
+      of the administrator.
+    explanation: The verifier does not know the intent of the administrator.
+  - id: b
+    text: The verifier proved that the program is safe to run, and it did not judge
+      whether the behavior is wanted.
+    explanation: Correct. The verifier proves memory safety and that the program ends.
+      It does not check that the program expresses the policy the administrator wants.
+  - id: c
+    text: The verifier is disabled for programs that Cilium loads.
+    explanation: Cilium programs go through the verifier like all others.
+  - id: d
+    text: The program will be rejected later by the JIT compiler.
+    explanation: The JIT compiler translates accepted programs and does not judge
+      behavior.
+  correct_option: b
+  explanation: The verifier proves memory safety and that the program ends. It does
+    not check that the program expresses the policy the administrator wants.
+- id: ats058-010-q02
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Name the hooks Cilium uses and what each one can see
+  source_readings:
+  - sections/section-010/module-01/course-02-hooks-and-maps.md
+  prompt: An application connects to the cluster IP of a Service. Cilium must replace
+    the cluster IP with a pod address before the application sends any packet. Which
+    hook does this?
+  options:
+  - id: a
+    text: The tc ingress hook on the pod interface.
+    explanation: A tc program sees finished packets, and by then the connection already
+      exists.
+  - id: b
+    text: The XDP hook in the network driver.
+    explanation: XDP handles frames that arrive at the node and does not see the connect
+      call of a local process.
+  - id: c
+    text: The tc egress hook on the node interface.
+    explanation: This hook also runs on packets and not on the connect call.
+  - id: d
+    text: The cgroup socket address hook for `connect`.
+    explanation: Correct. The socket address hook runs when the application calls
+      connect(), so the program can change the destination before any packet exists.
+  correct_option: d
+  explanation: The socket address hook runs when the application calls connect(),
+    so the program can change the destination before any packet exists.
+- id: ats058-010-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain what a map is and why its size is fixed
+  source_readings:
+  - sections/section-010/module-01/course-02-hooks-and-maps.md
+  prompt: The Cilium agent cannot add an entry to a map because the map holds its
+    maximum number of entries. What is the effect?
+  options:
+  - id: a
+    text: The map grows automatically by allocating more kernel memory.
+    explanation: A map has a fixed maximum size set at creation.
+  - id: b
+    text: The kernel removes the oldest entry of every map type.
+    explanation: Only some types, such as LRU hash maps, remove old entries.
+  - id: c
+    text: The new entry is rejected, so the datapath does not know about the change
+      even though the program is fine.
+    explanation: Correct. A full map rejects new entries. Maps are sized when they
+      are created, so a large cluster needs maps sized for it.
+  - id: d
+    text: The agent reloads the program with a bigger map in the same step.
+    explanation: A full map does not trigger a program reload.
+  correct_option: c
+  explanation: A full map rejects new entries. Maps are sized when they are created,
+    so a large cluster needs maps sized for it.
+- id: ats058-010-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Compare the Service object with the service map
+  source_readings:
+  - sections/section-010/module-01/course-02-hooks-and-maps.md
+  prompt: A request to a Service reaches a pod that was deleted an hour ago. The Kubernetes
+    Service object lists only live pods. What do you check first?
+  options:
+  - id: a
+    text: The Deployment replica count.
+    explanation: The replica count does not show what the kernel uses.
+  - id: b
+    text: The service map of the agent on that node, for example with `cilium-dbg
+      bpf lb list`.
+    explanation: Correct. The programs read the map, not the Service object. If the
+      agent stopped updating, the map can hold an old backend list.
+  - id: c
+    text: The Dockerfile of the application.
+    explanation: The image does not decide which backend the datapath selects.
+  - id: d
+    text: The node kernel version only.
+    explanation: The kernel version does not explain a stale backend.
+  correct_option: b
+  explanation: The programs read the map, not the Service object. If the agent stopped
+    updating, the map can hold an old backend list.
+- id: ats058-010-q05
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Name the Cilium components and what each one does
+  source_readings:
+  - sections/section-010/module-02/course-01-agent-endpoints-and-identity.md
+  prompt: Which Cilium component runs on every node, watches the Kubernetes API and
+    writes the eBPF maps of that node?
+  options:
+  - id: a
+    text: The Cilium operator.
+    explanation: The operator runs as a Deployment for cluster-wide tasks.
+  - id: b
+    text: Hubble Relay.
+    explanation: Relay collects flows and does not write the datapath maps.
+  - id: c
+    text: The Cilium agent.
+    explanation: Correct. The agent runs as a DaemonSet and loads programs and writes
+      maps on its node.
+  - id: d
+    text: The CNI plugin binary.
+    explanation: The plugin passes pod network requests to the agent and does not
+      keep the maps.
+  correct_option: c
+  explanation: The agent runs as a DaemonSet and loads programs and writes maps on
+    its node.
+- id: ats058-010-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain what a security identity is and why policy uses it
+  source_readings:
+  - sections/section-010/module-02/course-01-agent-endpoints-and-identity.md
+  prompt: 'A pod labelled `app: shuttle` is replaced and gets a new IP address. A
+    policy allows `app: shuttle`. Why does the policy still work?'
+  options:
+  - id: a
+    text: The policy matches the security identity of the labels, and the new pod
+      has the same identity.
+    explanation: Correct. Cilium maps labels to a numeric identity, and the IP cache
+      translates the address of the new pod to that identity.
+  - id: b
+    text: The agent copies the old IP address to the new pod.
+    explanation: Pods get new addresses when they are replaced.
+  - id: c
+    text: The policy matches the node name.
+    explanation: Policy does not select by node name here.
+  - id: d
+    text: The policy is disabled until the next agent restart.
+    explanation: Policy stays enforced.
+  correct_option: a
+  explanation: Cilium maps labels to a numeric identity, and the IP cache translates
+    the address of the new pod to that identity.
+- id: ats058-010-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain why a policy rule names the pod port and not the Service
+    port
+  source_readings:
+  - sections/section-010/module-02/course-02-policy-and-service-datapath.md
+  prompt: The Service `probe` listens on port 80 and forwards to the container port
+    8080. A policy rule must allow the `shuttle` pods. Which port does the rule name?
+  options:
+  - id: a
+    text: 80, the Service port.
+    explanation: The Service address is translated before the policy check, so port
+      80 never matches.
+  - id: b
+    text: Both 80 and 8080 are required.
+    explanation: Only the pod port is matched.
+  - id: c
+    text: No port, because ports are never part of a rule.
+    explanation: A rule can restrict ports.
+  - id: d
+    text: 8080, the port of the pod.
+    explanation: Correct. The destination is translated first, so the policy sees
+      the pod address and the pod port.
+  correct_option: d
+  explanation: The destination is translated first, so the policy sees the pod address
+    and the pod port.
+- id: ats058-010-q08
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Describe how a policy becomes a verdict on a packet
+  source_readings:
+  - sections/section-010/module-02/course-02-policy-and-service-datapath.md
+  prompt: A `CiliumNetworkPolicy` selects the `probe` pods and allows only `shuttle`.
+    What happens to a request from `drifter`?
+  options:
+  - id: a
+    text: It is allowed, because the policy only logs.
+    explanation: Once a policy selects the pods, traffic that no rule allows is denied.
+  - id: b
+    text: It is forwarded to the proxy of every node.
+    explanation: A proxy is used only for layer 7 rules.
+  - id: c
+    text: It is dropped by the tc program on the pod interface, because no policy
+      map entry allows its identity.
+    explanation: Correct. The agent resolves the policy into entries in the policy
+      map of the endpoint. A packet with no matching entry is dropped.
+  - id: d
+    text: It is queued until the agent restarts.
+    explanation: Packets are decided per packet by the program.
+  correct_option: c
+  explanation: The agent resolves the policy into entries in the policy map of the
+    endpoint. A packet with no matching entry is dropped.

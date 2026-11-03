@@ -1,0 +1,60 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-058-lab-010-02
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+    nodes:
+      workers: 1
+    networking:
+      disableDefaultCNI: true
+      podSubnet: 10.244.0.0/16
+
+bootstrap:
+  init:
+    - name: install-cilium-and-workloads
+      description: Install Cilium and create the example application
+      type: file
+      source: bootstrap/01-setup.sh
+
+
+# Applied only by astrona test: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: policy-selects-probe
+      description: A CiliumNetworkPolicy in starfleet selects the probe pods
+      type: file
+      source: validation/validate-policy-selects-probe.sh
+      hint: Create a CiliumNetworkPolicy in starfleet with endpointSelector matchLabels app probe.
+    - name: shuttle-allowed
+      description: The shuttle pod still reaches the probe Service
+      type: file
+      source: validation/validate-shuttle-allowed.sh
+      hint: The ingress rule must name the pods labelled app shuttle and the pod port 8080.
+    - name: drifter-blocked
+      description: The drifter pod in outpost can no longer reach the probe Service
+      type: file
+      source: validation/validate-drifter-blocked.sh
+      hint: Once a policy selects the probe pods, traffic that no rule allows is dropped.
+    - name: shuttle-identity-recorded
+      description: The ConfigMap identity-evidence holds the real numeric identity of the shuttle pod
+      type: file
+      source: validation/validate-shuttle-identity-recorded.sh
+      hint: Read the identity from the CiliumEndpoint of the shuttle pod and store it in the key shuttle_identity.
+
+teardown:
+  keepCluster: false

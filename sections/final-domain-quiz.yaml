@@ -1,0 +1,301 @@
+# Final domain knowledge check across all three sections.
+schema_version: 1
+kind: question_bank
+id: ats058-final
+course_id: ATS058
+exam_code: CCA
+status: draft
+provenance: Original practice material written for this course; not official exam
+  questions.
+scope:
+  type: domain
+  id: ebpf
+  title: eBPF
+questions:
+- id: ats058-final-q01
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: State what the verifier guarantees and what it does not
+  source_readings:
+  - sections/section-010/module-01/course-01-programs-verifier-and-loading.md
+  prompt: Which statement about the eBPF verifier is correct?
+  options:
+  - id: a
+    text: It proves that the program follows the network policy of the cluster.
+    explanation: It does not know any policy.
+  - id: b
+    text: It proves that the program ends and accesses only valid memory.
+    explanation: Correct. The verifier proves safety and termination. It does not
+      check intent.
+  - id: c
+    text: It compiles the C code of the program.
+    explanation: The compiler does that before loading.
+  - id: d
+    text: It attaches the program to the interface.
+    explanation: Attaching is done by the loader.
+  correct_option: b
+  explanation: The verifier proves safety and termination. It does not check intent.
+- id: ats058-final-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Choose the hook for a task
+  source_readings:
+  - sections/section-010/module-01/course-02-hooks-and-maps.md
+  prompt: Which hook enforces network policy on traffic to a pod?
+  options:
+  - id: a
+    text: The tc hook on the virtual interface of the pod.
+    explanation: Correct. The program on the pod interface sees every packet and looks
+      up the policy map.
+  - id: b
+    text: The cgroup connect hook.
+    explanation: This hook translates Service addresses at connect.
+  - id: c
+    text: A kernel module.
+    explanation: Cilium uses no kernel module.
+  - id: d
+    text: The kubelet.
+    explanation: The kubelet does not enforce Cilium policy.
+  correct_option: a
+  explanation: The program on the pod interface sees every packet and looks up the
+    policy map.
+- id: ats058-final-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain security identities
+  source_readings:
+  - sections/section-010/module-02/course-01-agent-endpoints-and-identity.md
+  prompt: What does the IP cache map do?
+  options:
+  - id: a
+    text: It stores pod logs.
+    explanation: It stores addresses and identities.
+  - id: b
+    text: It translates a source address to the security identity of the workload.
+    explanation: Correct. Policy compares identities, so the program first turns the
+      source address into an identity.
+  - id: c
+    text: It stores the kernel version.
+    explanation: It does not store versions.
+  - id: d
+    text: It caches DNS answers for pods.
+    explanation: DNS is a separate topic.
+  correct_option: b
+  explanation: Policy compares identities, so the program first turns the source address
+    into an identity.
+- id: ats058-final-q04
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Diagnose a policy that does not match
+  source_readings:
+  - sections/section-010/module-02/course-02-policy-and-service-datapath.md
+  prompt: A policy allows `shuttle` on port 80 of the `probe` pods, but requests through
+    the Service fail. The Service forwards port 80 to 8080. What is the fix?
+  options:
+  - id: a
+    text: Delete the Service.
+    explanation: The Service is correct.
+  - id: b
+    text: Restart the node.
+    explanation: A restart does not change the rule.
+  - id: c
+    text: Add a rule for the `outpost` namespace.
+    explanation: This would allow an unwanted client.
+  - id: d
+    text: Change the rule to the pod port 8080.
+    explanation: Correct. Policy is checked after the Service translation, so it sees
+      port 8080.
+  correct_option: d
+  explanation: Policy is checked after the Service translation, so it sees port 8080.
+- id: ats058-final-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Compare lookup models
+  source_readings:
+  - sections/section-020/module-01/course-01-lookups-and-updates.md
+  prompt: What is a drawback of a hash map in the datapath?
+  options:
+  - id: a
+    text: Its lookup time grows with the number of entries.
+    explanation: It does not.
+  - id: b
+    text: It cannot be updated while traffic flows.
+    explanation: Entries can be updated live.
+  - id: c
+    text: It has a fixed maximum size that must fit the cluster.
+    explanation: Correct. A map is created with a maximum size, and a full map rejects
+      new entries.
+  - id: d
+    text: It needs a kernel reboot to change.
+    explanation: No reboot is needed.
+  correct_option: c
+  explanation: A map is created with a maximum size, and a full map rejects new entries.
+- id: ats058-final-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain where packet path steps are removed
+  source_readings:
+  - sections/section-020/module-01/course-02-shorter-packet-paths.md
+  prompt: Which feature runs in the network driver before the kernel allocates its
+    packet structure?
+  options:
+  - id: a
+    text: Socket load balancing.
+    explanation: It runs at connect().
+  - id: b
+    text: XDP.
+    explanation: Correct. XDP runs in the driver and can decide early for traffic
+      that enters the node.
+  - id: c
+    text: Hubble.
+    explanation: Hubble reads events.
+  - id: d
+    text: The Cilium operator.
+    explanation: The operator is not a hook.
+  correct_option: b
+  explanation: XDP runs in the driver and can decide early for traffic that enters
+    the node.
+- id: ats058-final-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Read a Hubble verdict
+  source_readings:
+  - sections/section-020/module-02/course-01-observability-with-hubble.md
+  prompt: A Hubble line shows DROPPED with the reason Policy denied. What does it
+    mean?
+  options:
+  - id: a
+    text: The network cable is broken.
+    explanation: This would not name policy.
+  - id: b
+    text: The node ran out of memory.
+    explanation: Memory is not the reason.
+  - id: c
+    text: The datapath dropped the packet because no policy entry allowed it.
+    explanation: Correct. Policy denied is the reason for a drop caused by network
+      policy.
+  - id: d
+    text: The Service has no cluster IP.
+    explanation: This is a different problem.
+  correct_option: c
+  explanation: Policy denied is the reason for a drop caused by network policy.
+- id: ats058-final-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Describe agent restarts
+  source_readings:
+  - sections/section-020/module-02/course-02-safety-live-updates-and-agent-restart.md
+  prompt: Why does forwarding continue while the agent restarts?
+  options:
+  - id: a
+    text: The kernel holds the programs and the pinned maps.
+    explanation: Correct. The programs stay attached and the maps stay pinned in the
+      BPF file system.
+  - id: b
+    text: Another agent takes over the node.
+    explanation: No other agent does this.
+  - id: c
+    text: kube-proxy takes over.
+    explanation: kube-proxy is not involved.
+  - id: d
+    text: The traffic is paused.
+    explanation: Traffic is not paused.
+  correct_option: a
+  explanation: The programs stay attached and the maps stay pinned in the BPF file
+    system.
+- id: ats058-final-q09
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Read kube-proxy rules
+  source_readings:
+  - sections/section-030/module-01/course-01-netfilter-and-kube-proxy-chains.md
+  prompt: Which chain performs the destination NAT to a pod address?
+  options:
+  - id: a
+    text: KUBE-SERVICES
+    explanation: This chain matches the cluster IP.
+  - id: b
+    text: KUBE-SVC
+    explanation: This chain picks a backend.
+  - id: c
+    text: KUBE-SEP
+    explanation: Correct. The endpoint chain rewrites the destination to the address
+      and port of the pod.
+  - id: d
+    text: POSTROUTING
+    explanation: This hook is for packets that leave.
+  correct_option: c
+  explanation: The endpoint chain rewrites the destination to the address and port
+    of the pod.
+- id: ats058-final-q10
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Explain scaling limits
+  source_readings:
+  - sections/section-030/module-01/course-02-scaling-limits-of-iptables.md
+  prompt: Which cost grows each time Services or backends change in a large iptables
+    cluster?
+  options:
+  - id: a
+    text: The cost of loading a larger rule table.
+    explanation: Correct. kube-proxy loads the rules in a transaction whose cost depends
+      on the size of the table.
+  - id: b
+    text: The size of the container images.
+    explanation: It does not change.
+  - id: c
+    text: The number of Kubernetes namespaces.
+    explanation: It does not change.
+  - id: d
+    text: The length of the pod names.
+    explanation: It does not change.
+  correct_option: a
+  explanation: kube-proxy loads the rules in a transaction whose cost depends on the
+    size of the table.
+- id: ats058-final-q11
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Order a migration
+  source_readings:
+  - sections/section-030/module-02/course-02-migration-and-cleanup.md
+  prompt: Which order migrates a cluster to kube-proxy replacement safely?
+  options:
+  - id: a
+    text: Delete kube-proxy, then upgrade Cilium.
+    explanation: Services would break between the steps.
+  - id: b
+    text: Remove the rules, then verify, then upgrade.
+    explanation: The order is reversed.
+  - id: c
+    text: Upgrade, restart agents, verify, delete kube-proxy, remove the old rules.
+    explanation: Correct. Verification before deletion keeps a working path at each
+      step.
+  - id: d
+    text: Reboot all nodes and hope.
+    explanation: This is not a plan.
+  correct_option: c
+  explanation: Verification before deletion keeps a working path at each step.
+- id: ats058-final-q12
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Verify the replacement
+  source_readings:
+  - sections/section-030/module-02/course-01-kube-proxy-replacement.md
+  prompt: An agent was not restarted after the Helm upgrade with `kubeProxyReplacement=true`.
+    What does `cilium-dbg status` show?
+  options:
+  - id: a
+    text: The old mode, because the agent reads the setting at start.
+    explanation: Correct. Agents apply the setting when they start, so a restart is
+      required.
+  - id: b
+    text: The new mode immediately.
+    explanation: The agent reads the setting at start.
+  - id: c
+    text: An error that the Helm release is missing.
+    explanation: The status does not report this.
+  - id: d
+    text: Nothing, because the command does not exist.
+    explanation: The command exists.
+  correct_option: a
+  explanation: Agents apply the setting when they start, so a restart is required.

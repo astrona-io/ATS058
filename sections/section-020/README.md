@@ -5,13 +5,15 @@ exam_objectives:
 ---
 # eBPF Key Benefits
 
-This section covers eBPF Key Benefits. It develops eBPF Benefits And Their Practical Limits through mechanisms, examples, prerequisites and failure reasoning.
+This section explains what the eBPF datapath gains and where each gain has limits. The first module compares map lookups and incremental updates with rule chains, then covers socket load balancing, eBPF host routing and XDP. The second module covers Hubble observability, the safety guarantees of the verifier, live updates of programs and maps, and how the datapath behaves while the agent restarts.
 
-Read the module goals, teaching and closing summary in order. YAML checks are indexed separately and appear after designated summaries. Larger domains include an intermediate checkpoint before the final review.
+Each module has a playground and a graded lab. The section ends with a capstone lab and a knowledge check.
 
 ## Learning Outcomes
 
-- Explain programmability without rebuilding an entire kernel.
-- Relate efficient hooks and state lookup to supported networking work.
-- Describe identity-rich observation and dynamic updates.
-- Evaluate performance claims with workload and configuration context.
+- Explain why a hash map lookup takes constant time and why a map update changes one entry.
+- Describe how socket load balancing changes a Service address at `connect()`.
+- Name the conditions under which eBPF host routing and XDP are used and when Cilium falls back.
+- Read forwarded and dropped flows with Hubble and explain the drop reason.
+- Explain why the datapath keeps working while the agent restarts.
+- State that the benefit of each feature depends on the kernel and the configuration.

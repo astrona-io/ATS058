@@ -1,8 +1,17 @@
+# Course manifest for ATS058 - eBPF (Cilium Certified Associate).
+# Order per section: README, then per module the landing page, the parts with the lab's
+# question reading and lab entry right after the part it practises, and the summary.
+# The section capstone and the knowledge check close the section. Playgrounds are shown
+# by the markers on the landing and summary pages. solution.md is never listed.
+---
 training:
   id: ATS058
   title: 'CCA: eBPF'
-  description: 'Detailed reading material and reusable YAML knowledge checks for CCA:
-    eBPF. Technical content remains draft. Private playgrounds and draft independent labs are included.'
+  description: 'Training material for the eBPF domain of the Cilium Certified Associate
+    (CCA): how eBPF programs, hooks and maps work in Cilium, what the datapath gains
+    from them, and how Cilium compares with iptables and kube-proxy. Each module has
+    an ungraded playground and a graded lab, and each section closes with a capstone
+    and a knowledge check. Technical content remains draft and the labs are untested.'
   certification:
     name: Cilium Certified Associate
     code: CCA
@@ -32,117 +41,327 @@ modules:
     path: sections/intro/course-03-how-this-course-is-made.md
 - id: module-010
   title: Understand the Role of eBPF in Cilium
-  description: Developed reading and reasoning for Understand the Role of eBPF in
-    Cilium.
-  maturity: alpha
+  description: How eBPF programs, hooks and maps work and how the Cilium agent turns
+    pods, identities and policies into map entries.
+  status: alpha
   content:
   - type: reading
     title: Understand the Role of eBPF in Cilium
     path: sections/section-010/README.md
   - type: reading
-    title: eBPF Hooks, Programs And Maps In Cilium
+    title: eBPF Programs, Hooks And Maps
     path: sections/section-010/module-01/course.md
   - type: reading
-    title: eBPF Hooks, Programs And Maps In Cilium
-    path: sections/section-010/module-01/course-01-ebpf-hooks-programs-and-maps-in-cilium.md
+    title: What An eBPF Program Is And How It Reaches The Kernel
+    path: sections/section-010/module-01/course-01-programs-verifier-and-loading.md
   - type: reading
-    title: Inspect Agent BPF Service Maps — Task
+    title: 'Hooks And Maps: Where Programs Run And Where They Keep State'
+    path: sections/section-010/module-01/course-02-hooks-and-maps.md
+  - type: reading
+    title: Question
     path: sections/section-010/module-01/labs/lab-01/question.md
   - type: lab
-    title: Inspect Agent BPF Service Maps
+    title: Read The Service Datapath From The Agent Lab
     path: sections/section-010/module-01/labs/lab-01
     difficulty: intermediate
     estimated_duration: 25m
     topic: cilium-diagnostics
     task_kind: build
-    learning_goals:
-    - Prove the probe Service address is present in a real BPF service map.
     tags:
     - cca
-    - cilium-diagnostics
-  - type: reading
-    title: Inspect Agent BPF Service Maps — Solution
-    path: sections/section-010/module-01/labs/lab-01/solution.md
-  - type: reading
-    title: 'Guided Practice: Inspect Agent BPF Service Maps'
-    path: sections/section-010/module-01/course-02-guided-practice.md
+    - ebpf
+    - cilium-dbg
+    - bpf-maps
+    - service-map
+    learning_goals:
+    - Read the cluster IP and the backend of the probe Service from Kubernetes
+    - Find the IPv4 service map and confirm that it holds the Service
+    - Record the facts in a ConfigMap
+    resources:
+    - name: Cilium component overview
+      url: https://docs.cilium.io/en/stable/overview/component-overview/
   - type: reading
     title: Summary
     path: sections/section-010/module-01/course-03-summary.md
+  - type: reading
+    title: The Cilium Agent, Identities And The Datapath
+    path: sections/section-010/module-02/course.md
+  - type: reading
+    title: The Cilium Agent, Endpoints And Identities
+    path: sections/section-010/module-02/course-01-agent-endpoints-and-identity.md
+  - type: reading
+    title: How Cilium Enforces Policy And Load Balances Services With eBPF
+    path: sections/section-010/module-02/course-02-policy-and-service-datapath.md
+  - type: reading
+    title: Question
+    path: sections/section-010/module-02/labs/lab-01/question.md
+  - type: lab
+    title: Allow One Client With A CiliumNetworkPolicy Lab
+    path: sections/section-010/module-02/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: cilium-policy
+    task_kind: build
+    tags:
+    - cca
+    - ebpf
+    - ciliumnetworkpolicy
+    - identity
+    - endpoint
+    learning_goals:
+    - Write a CiliumNetworkPolicy that allows one client on the pod port
+    - Show that the other client is dropped
+    - Read the security identity of a pod
+    resources:
+    - name: Cilium network policy
+      url: https://docs.cilium.io/en/stable/security/policy/index.html
+  - type: reading
+    title: Summary
+    path: sections/section-010/module-02/course-03-summary.md
+  - type: reading
+    title: Question
+    path: sections/section-010/capstone/labs/lab-01/question.md
+  - type: lab
+    title: How eBPF Works In Cilium Capstone
+    path: sections/section-010/capstone/labs/lab-01
+    difficulty: advanced
+    estimated_duration: 30m
+    topic: cilium-policy
+    task_kind: build
+    tags:
+    - cca
+    - ebpf
+    - ciliumnetworkpolicy
+    - identity
+    - endpoint
+    - service-map
+    learning_goals:
+    - Find why a policy blocks the allowed client and fix it in place
+    - Verify the allowed and the blocked client
+    - Collect identities, an endpoint ID and a backend from the cluster
+    resources:
+    - name: Cilium component overview
+      url: https://docs.cilium.io/en/stable/overview/component-overview/
+    - name: Cilium network policy
+      url: https://docs.cilium.io/en/stable/security/policy/index.html
+  - type: quiz
+    title: 'Knowledge Check: How eBPF Works In Cilium'
+    path: sections/section-010/quiz.yaml
+    pass_score: 70
 - id: module-020
   title: eBPF Key Benefits
-  description: Developed reading and reasoning for eBPF Key Benefits.
-  maturity: alpha
+  description: 'What the datapath gains from eBPF: constant-time lookups, incremental
+    updates, shorter packet paths, Hubble observability and live updates.'
+  status: alpha
   content:
   - type: reading
     title: eBPF Key Benefits
     path: sections/section-020/README.md
   - type: reading
-    title: eBPF Benefits And Their Practical Limits
+    title: Lookups, Updates And Shorter Packet Paths
     path: sections/section-020/module-01/course.md
   - type: reading
-    title: eBPF Benefits And Their Practical Limits
-    path: sections/section-020/module-01/course-01-ebpf-benefits-and-their-practical-limits.md
+    title: Map Lookups And Incremental Updates Compared With Rule Chains
+    path: sections/section-020/module-01/course-01-lookups-and-updates.md
   - type: reading
-    title: Verify An eBPF Backed Service Path — Task
+    title: Question
     path: sections/section-020/module-01/labs/lab-01/question.md
   - type: lab
-    title: Verify An eBPF Backed Service Path
+    title: Add Twenty Services And Read Them In The Service Map Lab
     path: sections/section-020/module-01/labs/lab-01
     difficulty: intermediate
     estimated_duration: 25m
     topic: cilium-diagnostics
     task_kind: build
-    learning_goals:
-    - Prove the probe Service address is present in a real BPF service map.
     tags:
     - cca
-    - cilium-diagnostics
+    - ebpf
+    - service-map
+    - cilium-dbg
+    learning_goals:
+    - Create twenty Services with a loop
+    - Count their cluster IPs as frontends in the service map
+    - Reach the backend through the last Service
+    resources:
+    - name: Cilium component overview
+      url: https://docs.cilium.io/en/stable/overview/component-overview/
   - type: reading
-    title: Verify An eBPF Backed Service Path — Solution
-    path: sections/section-020/module-01/labs/lab-01/solution.md
-  - type: reading
-    title: 'Guided Practice: Verify An eBPF Backed Service Path'
-    path: sections/section-020/module-01/course-02-guided-practice.md
+    title: Socket Load Balancing, Host Routing And XDP
+    path: sections/section-020/module-01/course-02-shorter-packet-paths.md
   - type: reading
     title: Summary
     path: sections/section-020/module-01/course-03-summary.md
+  - type: reading
+    title: Observability, Safety And Live Updates
+    path: sections/section-020/module-02/course.md
+  - type: reading
+    title: Observability With Hubble
+    path: sections/section-020/module-02/course-01-observability-with-hubble.md
+  - type: reading
+    title: Question
+    path: sections/section-020/module-02/labs/lab-01/question.md
+  - type: lab
+    title: Enable Hubble And Observe A Forwarded And A Dropped Flow Lab
+    path: sections/section-020/module-02/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 30m
+    topic: cilium-observability
+    task_kind: build
+    tags:
+    - cca
+    - ebpf
+    - hubble
+    - helm
+    - flows
+    learning_goals:
+    - Enable Hubble and Hubble Relay with a Helm upgrade
+    - Read a forwarded and a dropped flow
+    - Record the verdicts and the drop reason
+    resources:
+    - name: Hubble setup
+      url: https://docs.cilium.io/en/stable/observability/hubble/setup/
+  - type: reading
+    title: Safety, Live Updates And Agent Restarts
+    path: sections/section-020/module-02/course-02-safety-live-updates-and-agent-restart.md
+  - type: reading
+    title: Summary
+    path: sections/section-020/module-02/course-03-summary.md
+  - type: reading
+    title: Question
+    path: sections/section-020/capstone/labs/lab-01/question.md
+  - type: lab
+    title: Benefits Of eBPF In Cilium Capstone
+    path: sections/section-020/capstone/labs/lab-01
+    difficulty: advanced
+    estimated_duration: 35m
+    topic: cilium-observability
+    task_kind: build
+    tags:
+    - cca
+    - ebpf
+    - hubble
+    - service-map
+    - helm
+    learning_goals:
+    - Enable Hubble and Hubble Relay
+    - Add ten Services and read them in the service map
+    - Prove a forwarded flow through a new Service
+    resources:
+    - name: Cilium component overview
+      url: https://docs.cilium.io/en/stable/overview/component-overview/
+    - name: Hubble setup
+      url: https://docs.cilium.io/en/stable/observability/hubble/setup/
+  - type: quiz
+    title: 'Knowledge Check: Benefits Of eBPF In Cilium'
+    path: sections/section-020/quiz.yaml
+    pass_score: 70
 - id: module-030
   title: eBPF-based Platforms versus IPtables-based Platforms
-  description: Developed reading and reasoning for eBPF-based Platforms versus IPtables-based
-    Platforms.
-  maturity: alpha
+  description: How kube-proxy uses iptables, where that model stops scaling, and how
+    Cilium replaces it.
+  status: alpha
   content:
   - type: reading
     title: eBPF-based Platforms versus IPtables-based Platforms
     path: sections/section-030/README.md
   - type: reading
-    title: Comparing eBPF And iptables Networking Models
+    title: How kube-proxy Uses iptables, And Where It Stops Scaling
     path: sections/section-030/module-01/course.md
   - type: reading
-    title: Comparing eBPF And iptables Networking Models
-    path: sections/section-030/module-01/course-01-comparing-ebpf-and-iptables-networking-models.md
+    title: Netfilter Hooks And The kube-proxy Chains
+    path: sections/section-030/module-01/course-01-netfilter-and-kube-proxy-chains.md
   - type: reading
-    title: Identify The kube-proxy Boundary — Task
+    title: Question
     path: sections/section-030/module-01/labs/lab-01/question.md
   - type: lab
-    title: Identify The kube-proxy Boundary
+    title: Find The kube-proxy Rules Of The probe Service Lab
     path: sections/section-030/module-01/labs/lab-01
     difficulty: intermediate
     estimated_duration: 25m
-    topic: cilium-diagnostics
+    topic: kube-proxy
     task_kind: build
-    learning_goals:
-    - Prove the probe Service address is present in a real BPF service map.
     tags:
     - cca
-    - cilium-diagnostics
+    - iptables
+    - kube-proxy
+    - netfilter
+    - nat
+    learning_goals:
+    - Find the KUBE-SVC chain of a Service from its rule comment
+    - Count the backend chains
+    - Record the result in a ConfigMap
+    resources:
+    - name: Kubernetes without kube-proxy
+      url: https://docs.cilium.io/en/stable/network/kubernetes/kubeproxy-free/
   - type: reading
-    title: Identify The kube-proxy Boundary — Solution
-    path: sections/section-030/module-01/labs/lab-01/solution.md
-  - type: reading
-    title: 'Guided Practice: Identify The kube-proxy Boundary'
-    path: sections/section-030/module-01/course-02-guided-practice.md
+    title: Scaling Limits Of The iptables Model
+    path: sections/section-030/module-01/course-02-scaling-limits-of-iptables.md
   - type: reading
     title: Summary
     path: sections/section-030/module-01/course-03-summary.md
+  - type: reading
+    title: Replacing kube-proxy With Cilium
+    path: sections/section-030/module-02/course.md
+  - type: reading
+    title: How Cilium Replaces kube-proxy
+    path: sections/section-030/module-02/course-01-kube-proxy-replacement.md
+  - type: reading
+    title: Migrating A Cluster And Cleaning Up The Old Rules
+    path: sections/section-030/module-02/course-02-migration-and-cleanup.md
+  - type: reading
+    title: Question
+    path: sections/section-030/module-02/labs/lab-01/question.md
+  - type: lab
+    title: Replace kube-proxy With Cilium Lab
+    path: sections/section-030/module-02/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 40m
+    topic: kube-proxy
+    task_kind: build
+    tags:
+    - cca
+    - kube-proxy-replacement
+    - helm
+    - iptables
+    - cilium-dbg
+    learning_goals:
+    - Enable kube-proxy replacement with the API server address
+    - Delete kube-proxy and clean its rules on every node
+    - Verify that the Service still works and that the backends are in the map
+    resources:
+    - name: Kubernetes without kube-proxy
+      url: https://docs.cilium.io/en/stable/network/kubernetes/kubeproxy-free/
+  - type: reading
+    title: Summary
+    path: sections/section-030/module-02/course-03-summary.md
+  - type: reading
+    title: Question
+    path: sections/section-030/capstone/labs/lab-01/question.md
+  - type: lab
+    title: Limits Of iptables And kube-proxy Capstone
+    path: sections/section-030/capstone/labs/lab-01
+    difficulty: advanced
+    estimated_duration: 45m
+    topic: kube-proxy
+    task_kind: build
+    tags:
+    - cca
+    - kube-proxy-replacement
+    - nodeport
+    - helm
+    - iptables
+    learning_goals:
+    - Migrate a cluster to kube-proxy replacement
+    - Keep a NodePort Service working on every node
+    - Verify the mode and the map and record the evidence
+    resources:
+    - name: Kubernetes without kube-proxy
+      url: https://docs.cilium.io/en/stable/network/kubernetes/kubeproxy-free/
+  - type: quiz
+    title: 'Knowledge Check: Limits Of iptables And kube-proxy'
+    path: sections/section-030/quiz.yaml
+    pass_score: 70
+  - type: quiz
+    title: 'Final Knowledge Check: eBPF In Cilium'
+    path: sections/final-domain-quiz.yaml
+    pass_score: 70
