@@ -81,8 +81,14 @@ modules:
     - name: Cilium component overview
       url: https://docs.cilium.io/en/stable/overview/component-overview/
   - type: reading
+    title: Program Types, Tail Calls And bpftool
+    path: sections/section-010/module-01/course-03-program-types-tail-calls-and-bpftool.md
+  - type: reading
+    title: Kernel Requirements, BTF And How Cilium Builds Its Programs
+    path: sections/section-010/module-01/course-04-kernel-requirements-btf-and-compilation.md
+  - type: reading
     title: Summary
-    path: sections/section-010/module-01/course-03-summary.md
+    path: sections/section-010/module-01/course-05-summary.md
   - type: reading
     title: The Cilium Agent, Identities And The Datapath
     path: sections/section-010/module-02/course.md
@@ -116,8 +122,55 @@ modules:
     - name: Cilium network policy
       url: https://docs.cilium.io/en/stable/security/policy/index.html
   - type: reading
+    title: Cilium Components, Custom Resources And Command Line Tools
+    path: sections/section-010/module-02/course-03-components-custom-resources-and-cli-tools.md
+  - type: reading
+    title: Connection Tracking And The Path Of A Request Between Pods
+    path: sections/section-010/module-02/course-04-connection-tracking-and-the-pod-to-pod-path.md
+  - type: reading
     title: Summary
-    path: sections/section-010/module-02/course-03-summary.md
+    path: sections/section-010/module-02/course-05-summary.md
+  - type: reading
+    title: Inspecting The Cilium Datapath On A Node
+    path: sections/section-010/module-03/course.md
+  - type: reading
+    title: Agent Health, Endpoints And The Right Node
+    path: sections/section-010/module-03/course-01-agent-health-and-endpoints.md
+  - type: reading
+    title: The IP Cache And Security Identities On A Node
+    path: sections/section-010/module-03/course-02-ip-cache-and-identities.md
+  - type: reading
+    title: Question
+    path: sections/section-010/module-03/labs/lab-01/question.md
+  - type: lab
+    title: Find The Datapath Objects Of The probe Pod Lab
+    path: sections/section-010/module-03/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: cilium-diagnostics
+    task_kind: build
+    tags:
+    - cca
+    - ebpf
+    - cilium-dbg
+    - endpoint
+    - ipcache
+    learning_goals:
+    - Find the agent pod on the node of the probe pod
+    - Read the endpoint ID and the identity of the probe pod
+    - Record the facts in a ConfigMap
+    resources:
+    - name: Cilium component overview
+      url: https://docs.cilium.io/en/stable/overview/component-overview/
+  - type: reading
+    title: Reading The Policy Map And The Connection Tracking Table
+    path: sections/section-010/module-03/course-03-policy-map-and-connection-tracking.md
+  - type: reading
+    title: Live Events With cilium-dbg monitor And The Loaded Programs
+    path: sections/section-010/module-03/course-04-live-events-and-loaded-programs.md
+  - type: reading
+    title: Summary
+    path: sections/section-010/module-03/course-05-summary.md
   - type: reading
     title: Question
     path: sections/section-010/capstone/labs/lab-01/question.md
@@ -189,8 +242,14 @@ modules:
     title: Socket Load Balancing, Host Routing And XDP
     path: sections/section-020/module-01/course-02-shorter-packet-paths.md
   - type: reading
+    title: Backend Selection, Maglev And Direct Server Return
+    path: sections/section-020/module-01/course-03-maglev-dsr-and-load-balancing-modes.md
+  - type: reading
+    title: Bandwidth Manager And How To Measure The Benefits
+    path: sections/section-020/module-01/course-04-bandwidth-manager-and-measuring-benefits.md
+  - type: reading
     title: Summary
-    path: sections/section-020/module-01/course-03-summary.md
+    path: sections/section-020/module-01/course-05-summary.md
   - type: reading
     title: Observability, Safety And Live Updates
     path: sections/section-020/module-02/course.md
@@ -224,8 +283,55 @@ modules:
     title: Safety, Live Updates And Agent Restarts
     path: sections/section-020/module-02/course-02-safety-live-updates-and-agent-restart.md
   - type: reading
+    title: Hubble Metrics, The Hubble UI And Layer 7 Visibility
+    path: sections/section-020/module-02/course-03-hubble-metrics-ui-and-layer-7-visibility.md
+  - type: reading
+    title: 'Security Benefits: Identity-Based Policy And Transparent Encryption'
+    path: sections/section-020/module-02/course-04-security-benefits-identity-policy-and-encryption.md
+  - type: reading
     title: Summary
-    path: sections/section-020/module-02/course-03-summary.md
+    path: sections/section-020/module-02/course-05-summary.md
+  - type: reading
+    title: Hubble CLI, Tetragon, Service Mesh And The eBPF Ecosystem
+    path: sections/section-020/module-03/course.md
+  - type: reading
+    title: Select Flows With The Hubble Command Line
+    path: sections/section-020/module-03/course-01-hubble-observe-filters.md
+  - type: reading
+    title: Flow Fields And JSON Output
+    path: sections/section-020/module-03/course-02-flow-fields-and-json-output.md
+  - type: reading
+    title: Question
+    path: sections/section-020/module-03/labs/lab-01/question.md
+  - type: lab
+    title: Find A Dropped Flow With Hubble Filters Lab
+    path: sections/section-020/module-03/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: cilium-observability
+    task_kind: build
+    tags:
+    - cca
+    - ebpf
+    - hubble
+    - flows
+    - cilium-dbg
+    learning_goals:
+    - Select a dropped flow with the verdict and label filters of hubble observe
+    - Read the destination port and protocol of the flow
+    - Read the security identity from a CiliumEndpoint and record the facts
+    resources:
+    - name: Hubble setup
+      url: https://docs.cilium.io/en/stable/observability/hubble/setup/
+  - type: reading
+    title: Service Mesh Features Without Sidecar Proxies
+    path: sections/section-020/module-03/course-03-service-mesh-and-envoy-without-sidecars.md
+  - type: reading
+    title: Tetragon And The eBPF Ecosystem
+    path: sections/section-020/module-03/course-04-tetragon-and-the-ebpf-ecosystem.md
+  - type: reading
+    title: Summary
+    path: sections/section-020/module-03/course-05-summary.md
   - type: reading
     title: Question
     path: sections/section-020/capstone/labs/lab-01/question.md
@@ -297,8 +403,14 @@ modules:
     title: Scaling Limits Of The iptables Model
     path: sections/section-030/module-01/course-02-scaling-limits-of-iptables.md
   - type: reading
+    title: IPVS And nftables Modes Of kube-proxy
+    path: sections/section-030/module-01/course-03-ipvs-and-nftables-modes.md
+  - type: reading
+    title: Connection Tracking And NAT Debugging
+    path: sections/section-030/module-01/course-04-conntrack-and-nat-debugging.md
+  - type: reading
     title: Summary
-    path: sections/section-030/module-01/course-03-summary.md
+    path: sections/section-030/module-01/course-05-summary.md
   - type: reading
     title: Replacing kube-proxy With Cilium
     path: sections/section-030/module-02/course.md
@@ -308,6 +420,12 @@ modules:
   - type: reading
     title: Migrating A Cluster And Cleaning Up The Old Rules
     path: sections/section-030/module-02/course-02-migration-and-cleanup.md
+  - type: reading
+    title: Services Features Of The Replacement
+    path: sections/section-030/module-02/course-03-replacement-features.md
+  - type: reading
+    title: Verifying And Troubleshooting The Replacement
+    path: sections/section-030/module-02/course-04-verify-and-troubleshoot.md
   - type: reading
     title: Question
     path: sections/section-030/module-02/labs/lab-01/question.md
@@ -333,7 +451,48 @@ modules:
       url: https://docs.cilium.io/en/stable/network/kubernetes/kubeproxy-free/
   - type: reading
     title: Summary
-    path: sections/section-030/module-02/course-03-summary.md
+    path: sections/section-030/module-02/course-05-summary.md
+  - type: reading
+    title: Policy, Masquerading And Host Firewall Without iptables
+    path: sections/section-030/module-03/course.md
+  - type: reading
+    title: Network Policy With iptables And With eBPF
+    path: sections/section-030/module-03/course-01-policy-enforcement.md
+  - type: reading
+    title: Masquerading With eBPF
+    path: sections/section-030/module-03/course-02-masquerading-with-ebpf.md
+  - type: reading
+    title: Question
+    path: sections/section-030/module-03/labs/lab-01/question.md
+  - type: lab
+    title: Turn On eBPF Masquerading Lab
+    path: sections/section-030/module-03/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 30m
+    topic: cilium-datapath
+    task_kind: build
+    tags:
+    - cca
+    - masquerading
+    - ebpf
+    - helm
+    - kube-proxy-replacement
+    learning_goals:
+    - Enable eBPF masquerading together with kube-proxy replacement
+    - Confirm that every agent reports the BPF mode
+    - Record the mode and the agent count in a ConfigMap
+    resources:
+    - name: Masquerading
+      url: https://docs.cilium.io/en/stable/network/concepts/masquerading/
+  - type: reading
+    title: The Host Firewall
+    path: sections/section-030/module-03/course-03-host-firewall.md
+  - type: reading
+    title: Comparing The Platforms
+    path: sections/section-030/module-03/course-04-comparing-the-platforms.md
+  - type: reading
+    title: Summary
+    path: sections/section-030/module-03/course-05-summary.md
   - type: reading
     title: Question
     path: sections/section-030/capstone/labs/lab-01/question.md

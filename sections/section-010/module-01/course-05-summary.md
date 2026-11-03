@@ -11,6 +11,10 @@ The verifier proves that a program is safe to execute. It does not prove that th
 
 A hook is the place where a program runs, and it decides what the program can see. Cilium uses tc hooks on pod and node interfaces, optional XDP hooks in the network driver and socket address hooks that translate Service addresses when an application connects. Maps hold the state that programs read. The agent writes Service, endpoint, identity and policy state into maps from the Kubernetes API, and the programs look it up for every packet.
 
+A program type fixes the hook, the context and the helper functions of a program. The agent pins maps in the BPF file system, so they survive an agent restart, and it splits the datapath into several programs that jump to each other with tail calls. `bpftool` lists the programs and maps that a kernel holds.
+
+Cilium needs a kernel of the minimum version of its release. The agent probes the kernel at startup and enables only the features that work. BTF and CO-RE let programs adapt to kernel differences, and the agent compiles the C datapath with the settings of the node and loads it through the verifier.
+
 Key facts:
 
 - The verifier checks safety, not intent.

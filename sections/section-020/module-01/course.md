@@ -7,7 +7,7 @@ exam_objectives:
 
 Cilium is not only a different way to write the same rules. It changes how the kernel finds the rule for a packet, how a change reaches the kernel and how many steps a packet takes before it reaches its destination. This module explains these three differences at the level of the data structures and the kernel code paths.
 
-The module has two parts. The first part compares a lookup in a hash map with the walk through a chain of rules, and it compares incremental updates with rewriting a whole rule set. The second part covers the places where Cilium shortens the packet path: translation at the socket, eBPF host routing and the optional XDP hook.
+The module has four parts. The first part compares a lookup in a hash map with the walk through a chain of rules, and it compares incremental updates with rewriting a whole rule set. The second part covers the places where Cilium shortens the packet path: translation at the socket, eBPF host routing and the optional XDP hook. The third part covers how a backend is selected, Maglev and direct server return. The fourth part covers the bandwidth manager and a method to measure the benefits.
 
 ## Learning objectives
 
@@ -18,6 +18,8 @@ After this module you can:
 - Explain what socket-level load balancing is and which step of the packet path it removes.
 - Describe what eBPF host routing and XDP change in the path of a packet.
 - Read the Service frontends and backends of a Cilium agent with `cilium-dbg`.
+- Compare the random and Maglev backend selection and the SNAT and DSR modes.
+- Explain what the bandwidth manager enforces and measure a feature with a fair method.
 
 ## Before you start
 

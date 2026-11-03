@@ -1,7 +1,9 @@
 ---
 version: 1
-approval: Maintainer requested playgrounds and graded labs on 2026-10-13. Course rebuilt
-  with two modules per section, capstones and quizzes. All runtime behavior is UNTESTED.
+approval: 'Maintainer requested playgrounds and graded labs on 2026-10-13. Course
+  rebuilt with two modules per section, capstones and quizzes. All runtime behavior
+  is UNTESTED. Deepened on 2026-11-03: four parts in modules 01 and 02 and a third
+  module in each section.'
 course:
   id: ATS058
   certification:
@@ -46,6 +48,16 @@ sections:
     playground: true
     module_lab: true
     lab: ats-058-lab-010-02
+  - id: module-03
+    title: Inspecting The Cilium Datapath On A Node
+    objectives:
+    - Read the agent status, the endpoint list and the endpoint details.
+    - Translate an IP address to an identity with the IP cache.
+    - Read the policy map and the connection tracking table.
+    - Watch drop events with cilium-dbg monitor.
+    playground: true
+    module_lab: true
+    lab: ats-058-lab-010-03
   capstone_lab: ats-058-lab-010-cap
 - id: section-020
   title: eBPF Key Benefits
@@ -69,6 +81,15 @@ sections:
     playground: true
     module_lab: true
     lab: ats-058-lab-020-02
+  - id: module-03
+    title: Hubble CLI, Tetragon, Service Mesh And The eBPF Ecosystem
+    objectives:
+    - Select flows with the filters of hubble observe and read JSON output.
+    - Explain Layer 7 features on a per-node Envoy proxy.
+    - State what Tetragon and other eBPF projects do.
+    playground: true
+    module_lab: true
+    lab: ats-058-lab-020-03
   capstone_lab: ats-058-lab-020-cap
 - id: section-030
   title: eBPF-based Platforms versus IPtables-based Platforms
@@ -92,4 +113,15 @@ sections:
     playground: true
     module_lab: true
     lab: ats-058-lab-030-02
+  - id: module-03
+    title: Policy, Masquerading And Host Firewall Without iptables
+    objectives:
+    - Explain how an iptables-based platform enforces policy and the limits of that
+      design.
+    - Turn on eBPF masquerading.
+    - Describe the host firewall and its audit mode.
+    - Compare the two platforms.
+    playground: true
+    module_lab: true
+    lab: ats-058-lab-030-03
   capstone_lab: ats-058-lab-030-cap

@@ -299,3 +299,135 @@ questions:
     explanation: The command exists.
   correct_option: a
   explanation: Agents apply the setting when they start, so a restart is required.
+- id: ats058-final-q13
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain what a tail call does in the Cilium datapath
+  source_readings:
+  - sections/section-010/module-01/course-03-program-types-tail-calls-and-bpftool.md
+  prompt: "Why does the Cilium datapath use several eBPF programs that call each other?"
+  options:
+  - id: a
+    text: "Each program may be only one instruction long."
+    explanation: "Incorrect. This does not match the mechanism described in the reading."
+  - id: b
+    text: "The size and complexity of one program is limited by the verifier, so the work is split into programs that jump to each other."
+    explanation: "Correct. The verifier limits what one program may do, so a large datapath is split into programs that jump to each other with tail calls."
+  - id: c
+    text: "The kernel allows one program for each pod only."
+    explanation: "Incorrect. This does not match the mechanism described in the reading."
+  - id: d
+    text: "Hubble needs one program for each flow."
+    explanation: "Incorrect. This does not match the mechanism described in the reading."
+  correct_option: b
+  explanation: "The verifier limits what one program may do, so a large datapath is split into programs that jump to each other with tail calls."
+- id: ats058-final-q14
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Read the identity of a source address
+  source_readings:
+  - sections/section-010/module-03/course.md
+  prompt: "Which map translates the source IP address of a packet to a security identity?"
+  options:
+  - id: a
+    text: "The policy map of the endpoint."
+    explanation: "Incorrect. This does not match the mechanism described in the reading."
+  - id: b
+    text: "The ipcache map."
+    explanation: "Correct. The ipcache map holds the identity for each IP address, and the policy map is then searched with that identity."
+  - id: c
+    text: "The service map."
+    explanation: "Incorrect. This does not match the mechanism described in the reading."
+  - id: d
+    text: "The NAT map."
+    explanation: "Incorrect. This does not match the mechanism described in the reading."
+  correct_option: b
+  explanation: "The ipcache map holds the identity for each IP address, and the policy map is then searched with that identity."
+- id: ats058-final-q15
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Choose the load balancing algorithm for consistent selection
+  source_readings:
+  - sections/section-020/module-01/course-03-maglev-dsr-and-load-balancing-modes.md
+  prompt: "Two nodes must pick the same backend for the same connection. Which Cilium setting supports this?"
+  options:
+  - id: a
+    text: "Random backend selection."
+    explanation: "Incorrect. This does not match the mechanism described in the reading."
+  - id: b
+    text: "Maglev consistent hashing."
+    explanation: "Correct. Maglev builds the same lookup table on every node, so nodes pick the same backend for the same connection."
+  - id: c
+    text: "A larger conntrack table."
+    explanation: "Incorrect. This does not match the mechanism described in the reading."
+  - id: d
+    text: "A second Hubble Relay."
+    explanation: "Incorrect. This does not match the mechanism described in the reading."
+  correct_option: b
+  explanation: "Maglev builds the same lookup table on every node, so nodes pick the same backend for the same connection."
+- id: ats058-final-q16
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: State a security benefit of identity-based policy
+  source_readings:
+  - sections/section-020/module-02/course-04-security-benefits-identity-policy-and-encryption.md
+  prompt: "What is a security benefit of Cilium policy that is based on identities and not on IP addresses?"
+  options:
+  - id: a
+    text: "The policy stays correct when a pod restarts with a new IP address and the same labels."
+    explanation: "Correct. The identity belongs to the labels, so a new IP address changes only the ipcache entry."
+  - id: b
+    text: "The policy removes the need for labels."
+    explanation: "Incorrect. This does not match the mechanism described in the reading."
+  - id: c
+    text: "The policy encrypts the traffic."
+    explanation: "Incorrect. This does not match the mechanism described in the reading."
+  - id: d
+    text: "The policy works only on one node."
+    explanation: "Incorrect. This does not match the mechanism described in the reading."
+  correct_option: a
+  explanation: "The identity belongs to the labels, so a new IP address changes only the ipcache entry."
+- id: ats058-final-q17
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Compare the kube-proxy modes
+  source_readings:
+  - sections/section-030/module-01/course-03-ipvs-and-nftables-modes.md
+  prompt: "Which limit stays the same in the IPVS and nftables modes of kube-proxy?"
+  options:
+  - id: a
+    text: "The ordered scan of one chain per Service."
+    explanation: "Incorrect. This does not match the mechanism described in the reading."
+  - id: b
+    text: "The missing identity of the sender in the packet."
+    explanation: "Correct. The new modes change how a backend is found. Policy by IP address and the missing identity stay."
+  - id: c
+    text: "The need to use a rule for each Service port."
+    explanation: "Incorrect. This does not match the mechanism described in the reading."
+  - id: d
+    text: "The need for a kernel module for each Service."
+    explanation: "Incorrect. This does not match the mechanism described in the reading."
+  correct_option: b
+  explanation: "The new modes change how a backend is found. Policy by IP address and the missing identity stay."
+- id: ats058-final-q18
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Choose the masquerading implementation
+  source_readings:
+  - sections/section-030/module-03/course-02-masquerading-with-ebpf.md
+  prompt: "Which Helm value moves the masquerading of Cilium from iptables to an eBPF program?"
+  options:
+  - id: a
+    text: "`bpf.masquerade=true`"
+    explanation: "Correct. `bpf.masquerade=true` turns on the eBPF implementation, and the agents must restart to read it."
+  - id: b
+    text: "`hostFirewall.enabled=true`"
+    explanation: "Incorrect. This does not match the mechanism described in the reading."
+  - id: c
+    text: "`kubeProxyReplacement=false`"
+    explanation: "Incorrect. This does not match the mechanism described in the reading."
+  - id: d
+    text: "`policyEnforcementMode=never`"
+    explanation: "Incorrect. This does not match the mechanism described in the reading."
+  correct_option: a
+  explanation: "`bpf.masquerade=true` turns on the eBPF implementation, and the agents must restart to read it."

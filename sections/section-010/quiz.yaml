@@ -225,3 +225,253 @@ questions:
   correct_option: c
   explanation: The agent resolves the policy into entries in the policy map of the
     endpoint. A packet with no matching entry is dropped.
+- id: ats058-010-q09
+  type: single_choice
+  difficulty: beginner
+  learning_objective: State what a tail call does
+  source_readings:
+  - sections/section-010/module-01/course-03-program-types-tail-calls-and-bpftool.md
+  prompt: The Cilium datapath is split into several eBPF programs. What does a tail
+    call do?
+  options:
+  - id: a
+    text: It starts a user space process that finishes the packet.
+    explanation: A tail call stays inside the kernel and does not start processes.
+  - id: b
+    text: It replaces the running program with another program from a program array,
+      and it does not return.
+    explanation: Correct. The program array map holds the target programs, and the
+      kernel limits a chain to 33 tail calls.
+  - id: c
+    text: It copies the packet to the Hubble Relay.
+    explanation: Hubble reads events, and a tail call does not copy packets.
+  - id: d
+    text: It loads a new program into the kernel with the bpf() call.
+    explanation: Loading is done by the agent with the bpf() system call, not by a
+      tail call.
+  correct_option: b
+  explanation: The program array map holds the target programs, and the kernel limits
+    a chain to 33 tail calls.
+- id: ats058-010-q10
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain why traffic keeps flowing when the agent restarts
+  source_readings:
+  - sections/section-010/module-01/course-03-program-types-tail-calls-and-bpftool.md
+  prompt: The Cilium agent pod restarts on a node. Why do existing connections of
+    the pods on that node keep working?
+  options:
+  - id: a
+    text: The programs stay attached to their hooks, and the maps are pinned in the
+      BPF file system.
+    explanation: Correct. The kernel keeps attached programs, and pinned maps keep
+      their content.
+  - id: b
+    text: Kubernetes moves the pods to another node until the agent returns.
+    explanation: Pods stay on their node.
+  - id: c
+    text: The kernel disables policy until the agent is back.
+    explanation: Policy stays enforced by the programs that are still attached.
+  - id: d
+    text: The operator takes over the datapath of the node.
+    explanation: The operator does not run a datapath.
+  correct_option: a
+  explanation: The kernel keeps attached programs, and pinned maps keep their content.
+- id: ats058-010-q11
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain BTF and the kernel requirements of Cilium
+  source_readings:
+  - sections/section-010/module-01/course-04-kernel-requirements-btf-and-compilation.md
+  prompt: Two nodes of one cluster run different kernel versions. On one node a Cilium
+    feature does not work. What is the first thing to check?
+  options:
+  - id: a
+    text: The number of pods on the node.
+    explanation: The pod count does not decide whether the kernel has a feature.
+  - id: b
+    text: The version of the Helm chart only, because the kernel is irrelevant.
+    explanation: Cilium depends on kernel features, so the kernel matters.
+  - id: c
+    text: The kernel version and the features that the agent of that node detected
+      at startup.
+    explanation: Correct. The agent probes the kernel of its node and enables only
+      what works there.
+  - id: d
+    text: The name of the node.
+    explanation: The node name has no effect on kernel features.
+  correct_option: c
+  explanation: The agent probes the kernel of its node and enables only what works
+    there.
+- id: ats058-010-q12
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Name the roles of the operator and the CNI plugin
+  source_readings:
+  - sections/section-010/module-02/course-03-components-custom-resources-and-cli-tools.md
+  prompt: The Cilium operator is stopped for an hour. Which statement describes the
+    effect?
+  options:
+  - id: a
+    text: All pod traffic stops immediately.
+    explanation: The datapath runs in the kernel and the agent, not in the operator.
+  - id: b
+    text: Existing traffic keeps flowing, and cluster-wide cleanup and new address
+      range allocations stop.
+    explanation: Correct. The operator does cluster-wide tasks such as removing unused
+      identities and allocating pod ranges.
+  - id: c
+    text: Policy is no longer enforced.
+    explanation: The programs on the nodes enforce policy without the operator.
+  - id: d
+    text: The agents on all nodes restart.
+    explanation: The agents do not depend on the operator to run.
+  correct_option: b
+  explanation: The operator does cluster-wide tasks such as removing unused identities
+    and allocating pod ranges.
+- id: ats058-010-q13
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Tell cilium-dbg from the cilium command line interface
+  source_readings:
+  - sections/section-010/module-02/course-03-components-custom-resources-and-cli-tools.md
+  prompt: You want to read the endpoint list of one node. Which tool and where do
+    you run it?
+  options:
+  - id: a
+    text: The `cilium` CLI on your own machine, which always shows all nodes.
+    explanation: The cilium CLI manages the cluster, and the endpoint list of one
+      node comes from its agent.
+  - id: b
+    text: "`cilium-dbg` on your own machine, outside the cluster."
+    explanation: cilium-dbg exists in the agent container.
+  - id: c
+    text: "`kubectl apply` with a CiliumEndpoint object."
+    explanation: The agent owns CiliumEndpoint objects, and applying one does not
+      list endpoints.
+  - id: d
+    text: "`cilium-dbg` inside the agent pod of that node, started with kubectl exec."
+    explanation: Correct. cilium-dbg talks to the local agent through a Unix socket.
+  correct_option: d
+  explanation: cilium-dbg talks to the local agent through a Unix socket.
+- id: ats058-010-q14
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain connection tracking in the Cilium datapath
+  source_readings:
+  - sections/section-010/module-02/course-04-connection-tracking-and-the-pod-to-pod-path.md
+  prompt: A policy allows `shuttle` to reach `probe` on port 8080. Why does the policy
+    need no extra rule for the replies of `probe`?
+  options:
+  - id: a
+    text: Replies are never checked by any program.
+    explanation: Programs process replies too, and they find the stored entry.
+  - id: b
+    text: Replies are sent through the operator.
+    explanation: The operator is not in the packet path.
+  - id: c
+    text: Replies match the connection tracking entry that the first packet created.
+    explanation: Correct. Cilium keeps its own connection tracking table in eBPF maps.
+  - id: d
+    text: Replies use a different identity that is always allowed.
+    explanation: The identity of the reply source does not change the result.
+  correct_option: c
+  explanation: Cilium keeps its own connection tracking table in eBPF maps.
+- id: ats058-010-q15
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Compare tunnel and native routing
+  source_readings:
+  - sections/section-010/module-02/course-04-connection-tracking-and-the-pod-to-pod-path.md
+  prompt: What must be true before you switch Cilium from tunnel mode to native routing?
+  options:
+  - id: a
+    text: The node network can route the pod address ranges of all nodes.
+    explanation: Correct. Native routing sends pod packets without a wrapper, so the
+      network must know the pod ranges.
+  - id: b
+    text: All pods must use host networking.
+    explanation: Pods keep their own addresses.
+  - id: c
+    text: The operator must run on every node.
+    explanation: The operator is a Deployment and does not run on every node.
+  - id: d
+    text: Hubble must be disabled.
+    explanation: Hubble has no effect on the routing mode.
+  correct_option: a
+  explanation: Native routing sends pod packets without a wrapper, so the network
+    must know the pod ranges.
+- id: ats058-010-q16
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Find the agent of the node of a pod
+  source_readings:
+  - sections/section-010/module-03/course-01-agent-health-and-endpoints.md
+  prompt: You investigate the `probe` pod. Why is `kubectl exec ds/cilium` a risky
+    choice?
+  options:
+  - id: a
+    text: It runs the command in all agents and doubles the output.
+    explanation: It runs in one pod.
+  - id: b
+    text: It selects one agent pod, and that agent can be on a different node than
+      the pod.
+    explanation: Correct. Choose the agent pod that has the same node name as the
+      pod you investigate.
+  - id: c
+    text: It deletes the endpoint list.
+    explanation: It only reads.
+  - id: d
+    text: It only works on the control plane node.
+    explanation: It works on any node.
+  correct_option: b
+  explanation: Choose the agent pod that has the same node name as the pod you investigate.
+- id: ats058-010-q17
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Translate an IP address to an identity
+  source_readings:
+  - sections/section-010/module-03/course-02-ip-cache-and-identities.md
+  prompt: Which command shows the security identity that the node uses for a pod IP
+    address?
+  options:
+  - id: a
+    text: cilium-dbg bpf lb list
+    explanation: This command prints service frontends and backends.
+  - id: b
+    text: cilium-dbg bpf ct list global
+    explanation: This command prints connection tracking entries.
+  - id: c
+    text: cilium-dbg bpf ipcache get <pod-ip>
+    explanation: Correct. The IP cache maps addresses and prefixes to identities.
+  - id: d
+    text: cilium-dbg map list
+    explanation: This command lists maps and does not translate addresses.
+  correct_option: c
+  explanation: The IP cache maps addresses and prefixes to identities.
+- id: ats058-010-q18
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Explain a drop with the policy map
+  source_readings:
+  - sections/section-010/module-03/course-03-policy-map-and-connection-tracking.md
+  prompt: A policy selects `probe` and allows only `shuttle`. `drifter` is dropped.
+    Which reads prove the cause without sending traffic?
+  options:
+  - id: a
+    text: Only the logs of the operator.
+    explanation: The operator does not decide packets.
+  - id: b
+    text: The routing mode and the kernel version.
+    explanation: Those facts do not show the verdict of the policy.
+  - id: c
+    text: The Service object and its cluster IP.
+    explanation: The Service object does not show policy decisions.
+  - id: d
+    text: The endpoint list shows ingress enforcement, the IP cache gives the identity
+      of `drifter`, and the policy map of `probe` has no entry for that identity.
+    explanation: Correct. The packet finds no allow entry in the policy map and the
+      program drops it.
+  correct_option: d
+  explanation: The packet finds no allow entry in the policy map and the program drops
+    it.

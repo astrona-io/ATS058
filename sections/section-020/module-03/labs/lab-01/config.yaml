@@ -1,0 +1,55 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-058-lab-020-03
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+    nodes:
+      workers: 1
+    networking:
+      disableDefaultCNI: true
+      podSubnet: 10.244.0.0/16
+
+bootstrap:
+  init:
+    - name: install-cilium-and-workloads
+      description: Install Cilium and create the example application
+      type: file
+      source: bootstrap/01-setup.sh
+
+
+# Applied only by astrona test: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: hubble-running
+      description: Hubble is enabled and Hubble Relay is running
+      type: file
+      source: validation/validate-hubble-running.sh
+      hint: Hubble is already enabled by the setup. Check that the hubble-relay Deployment is ready.
+    - name: filter-selects-dropped-flow
+      description: The filters select the dropped flow from drifter to probe on port 8080
+      type: file
+      source: validation/validate-filter-selects-dropped-flow.sh
+      hint: Send a request from drifter, then run hubble observe with --from-label, --to-label and --verdict DROPPED inside an agent pod.
+    - name: flow-filter-evidence-correct
+      description: The ConfigMap flow-filter-evidence records the client, the port, the protocol and the identity
+      type: file
+      source: validation/validate-flow-filter-evidence-correct.sh
+      hint: Read the identity from the CiliumEndpoint of the drifter pod in outpost.
+
+teardown:
+  keepCluster: false

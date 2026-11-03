@@ -1,6 +1,6 @@
 # Knowledge Checks
 
-Each section has a `quiz.yaml` with 8 questions, and the course has `sections/final-domain-quiz.yaml` with 12 questions. Each file is listed in `astrona.yaml` as a `type: quiz` entry with `pass_score: 70`. The section quiz follows the capstone lab of its section. The final quiz is the last entry of the course.
+Each section has a `quiz.yaml` with 18 questions, and the course has `sections/final-domain-quiz.yaml` with 18 questions. Each file is listed in `astrona.yaml` as a `type: quiz` entry with `pass_score: 70`. The section quiz follows the capstone lab of its section. The final quiz is the last entry of the course.
 
 ## Fields
 

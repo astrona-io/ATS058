@@ -214,3 +214,223 @@ questions:
   correct_option: d
   explanation: The conntrack table has a fixed maximum. When it is full, new connections
     are dropped.
+- id: ats058-030-q09
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Name the kube-proxy modes
+  source_readings:
+  - sections/section-030/module-01/course-03-ipvs-and-nftables-modes.md
+  prompt: "Which structure does the IPVS mode of kube-proxy use to find the backends of a Service?"
+  options:
+  - id: a
+    text: "An ordered list of iptables chains, one per Service."
+    explanation: "This is not what the source says: the choice does not match the mechanism described in the reading."
+  - id: b
+    text: "A kernel hash table of virtual servers."
+    explanation: "Correct. IPVS stores virtual servers in a hash table, so the lookup time does not grow with the number of Services."
+  - id: c
+    text: "A BPF map that the Cilium agent writes."
+    explanation: "This is not what the source says: the choice does not match the mechanism described in the reading."
+  - id: d
+    text: "A file on each node that kube-proxy reads for every packet."
+    explanation: "This is not what the source says: the choice does not match the mechanism described in the reading."
+  correct_option: b
+  explanation: "IPVS stores virtual servers in a hash table, so the lookup time does not grow with the number of Services."
+- id: ats058-030-q10
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Find the mode of a kube-proxy
+  source_readings:
+  - sections/section-030/module-01/course-03-ipvs-and-nftables-modes.md
+  prompt: "On a kubeadm cluster, where do you read the kube-proxy mode?"
+  options:
+  - id: a
+    text: "In the `mode` field of the kube-proxy configuration in the ConfigMap `kube-proxy`."
+    explanation: "Correct. The mode is a field of the kube-proxy configuration. An empty value means the iptables mode."
+  - id: b
+    text: "In the output of `cilium-dbg status`."
+    explanation: "This is not what the source says: the choice does not match the mechanism described in the reading."
+  - id: c
+    text: "In the label of the node."
+    explanation: "This is not what the source says: the choice does not match the mechanism described in the reading."
+  - id: d
+    text: "In the `spec` of each Service."
+    explanation: "This is not what the source says: the choice does not match the mechanism described in the reading."
+  correct_option: a
+  explanation: "The mode is a field of the kube-proxy configuration. An empty value means the iptables mode."
+- id: ats058-030-q11
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain what the other modes leave open
+  source_readings:
+  - sections/section-030/module-01/course-03-ipvs-and-nftables-modes.md
+  prompt: "Which limit of the iptables mode does the nftables mode of kube-proxy NOT remove?"
+  options:
+  - id: a
+    text: "The ordered scan of one chain per Service."
+    explanation: "This is not what the source says: the choice does not match the mechanism described in the reading."
+  - id: b
+    text: "The fixed size of the connection tracking table and the lack of sender identity in the packet."
+    explanation: "Correct. The nftables mode changes how a backend is found. Connection tracking and the missing identity stay."
+  - id: c
+    text: "The cost of loading a large rule set for each change."
+    explanation: "This is not what the source says: the choice does not match the mechanism described in the reading."
+  - id: d
+    text: "The need for a rule for each Service."
+    explanation: "This is not what the source says: the choice does not match the mechanism described in the reading."
+  correct_option: b
+  explanation: "The nftables mode changes how a backend is found. Connection tracking and the missing identity stay."
+- id: ats058-030-q12
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Describe what conntrack stores
+  source_readings:
+  - sections/section-030/module-01/course-04-conntrack-and-nat-debugging.md
+  prompt: "Why can a reply packet from a pod return to the client with the cluster IP as its source?"
+  options:
+  - id: a
+    text: "The pod knows the cluster IP."
+    explanation: "This is not what the source says: the choice does not match the mechanism described in the reading."
+  - id: b
+    text: "The connection tracking entry stores both directions of the translation."
+    explanation: "Correct. The conntrack entry holds the original and the reply direction, so the kernel translates the reply back."
+  - id: c
+    text: "The Kubernetes API rewrites the packet."
+    explanation: "This is not what the source says: the choice does not match the mechanism described in the reading."
+  - id: d
+    text: "The client sends every packet twice."
+    explanation: "This is not what the source says: the choice does not match the mechanism described in the reading."
+  correct_option: b
+  explanation: "The conntrack entry holds the original and the reply direction, so the kernel translates the reply back."
+- id: ats058-030-q13
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Recognize a full conntrack table
+  source_readings:
+  - sections/section-030/module-01/course-04-conntrack-and-nat-debugging.md
+  prompt: "A node drops new connections and the kernel log says `nf_conntrack: table full, dropping packet`. Which two values do you compare?"
+  options:
+  - id: a
+    text: "`nf_conntrack_count` and `nf_conntrack_max`."
+    explanation: "Correct. The count of entries is compared with the maximum size of the table."
+  - id: b
+    text: "`ip_forward` and `rp_filter`."
+    explanation: "This is not what the source says: the choice does not match the mechanism described in the reading."
+  - id: c
+    text: "The Service count and the pod count."
+    explanation: "This is not what the source says: the choice does not match the mechanism described in the reading."
+  - id: d
+    text: "The CPU count and the memory size."
+    explanation: "This is not what the source says: the choice does not match the mechanism described in the reading."
+  correct_option: a
+  explanation: "The count of entries is compared with the maximum size of the table."
+- id: ats058-030-q14
+  type: single_choice
+  difficulty: beginner
+  learning_objective: List the Service types the replacement handles
+  source_readings:
+  - sections/section-030/module-02/course-03-replacement-features.md
+  prompt: "Which Service forms does Cilium handle when `kubeProxyReplacement` is true?"
+  options:
+  - id: a
+    text: "ClusterIP only."
+    explanation: "This is not what the source says: the choice does not match the mechanism described in the reading."
+  - id: b
+    text: "ClusterIP and NodePort only."
+    explanation: "This is not what the source says: the choice does not match the mechanism described in the reading."
+  - id: c
+    text: "ClusterIP, NodePort, LoadBalancer, ExternalIPs and HostPort."
+    explanation: "Correct. With the replacement on, Cilium handles all of these forms from the same Service and EndpointSlice data."
+  - id: d
+    text: "Only Services of type LoadBalancer."
+    explanation: "This is not what the source says: the choice does not match the mechanism described in the reading."
+  correct_option: c
+  explanation: "With the replacement on, Cilium handles all of these forms from the same Service and EndpointSlice data."
+- id: ats058-030-q15
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain externalTrafficPolicy Local
+  source_readings:
+  - sections/section-030/module-02/course-03-replacement-features.md
+  prompt: "What does `externalTrafficPolicy: Local` do for external traffic to a node port?"
+  options:
+  - id: a
+    text: "It sends the traffic to a backend on any node."
+    explanation: "This is not what the source says: the choice does not match the mechanism described in the reading."
+  - id: b
+    text: "It sends the traffic only to backends on the receiving node and keeps the client address."
+    explanation: "Correct. With Local, a node without a local backend does not answer, and the client address stays visible."
+  - id: c
+    text: "It disables the Service."
+    explanation: "This is not what the source says: the choice does not match the mechanism described in the reading."
+  - id: d
+    text: "It turns on direct server return for all Services."
+    explanation: "This is not what the source says: the choice does not match the mechanism described in the reading."
+  correct_option: b
+  explanation: "With Local, a node without a local backend does not answer, and the client address stays visible."
+- id: ats058-030-q16
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Verify the replacement in layers
+  source_readings:
+  - sections/section-030/module-02/course-04-verify-and-troubleshoot.md
+  prompt: "Which check shows that the kernel programs hold the backends of a Service?"
+  options:
+  - id: a
+    text: "The Helm value `kubeProxyReplacement`."
+    explanation: "This is not what the source says: the choice does not match the mechanism described in the reading."
+  - id: b
+    text: "The output of `cilium-dbg bpf lb list`."
+    explanation: "Correct. The map shows the state that the programs use. The Helm value only shows the intent."
+  - id: c
+    text: "The label of the Service."
+    explanation: "This is not what the source says: the choice does not match the mechanism described in the reading."
+  - id: d
+    text: "The age of the Cilium pods."
+    explanation: "This is not what the source says: the choice does not match the mechanism described in the reading."
+  correct_option: b
+  explanation: "The map shows the state that the programs use. The Helm value only shows the intent."
+- id: ats058-030-q17
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain how Cilium decides policy
+  source_readings:
+  - sections/section-030/module-03/course-01-policy-enforcement.md
+  prompt: "How does Cilium decide whether a packet to a pod is allowed?"
+  options:
+  - id: a
+    text: "It walks an ordered chain of iptables rules."
+    explanation: "This is not what the source says: the choice does not match the mechanism described in the reading."
+  - id: b
+    text: "It looks up the identity of the sender in the ipcache and then looks for an allow entry in the policy map."
+    explanation: "Correct. Two map lookups decide: the identity lookup, then the policy entry for identity, port and protocol."
+  - id: c
+    text: "It asks the Kubernetes API for each packet."
+    explanation: "This is not what the source says: the choice does not match the mechanism described in the reading."
+  - id: d
+    text: "It compares the packet with a list of pod names."
+    explanation: "This is not what the source says: the choice does not match the mechanism described in the reading."
+  correct_option: b
+  explanation: "Two map lookups decide: the identity lookup, then the policy entry for identity, port and protocol."
+- id: ats058-030-q18
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Choose the masquerading implementation
+  source_readings:
+  - sections/section-030/module-03/course-02-masquerading-with-ebpf.md
+  prompt: "Which Helm value selects the eBPF implementation of masquerading?"
+  options:
+  - id: a
+    text: "`bpf.masquerade=true`"
+    explanation: "Correct. `bpf.masquerade=true` moves the translation to an eBPF program, and the agents must restart to read it."
+  - id: b
+    text: "`hostFirewall.enabled=true`"
+    explanation: "This is not what the source says: the choice does not match the mechanism described in the reading."
+  - id: c
+    text: "`loadBalancer.mode=dsr`"
+    explanation: "This is not what the source says: the choice does not match the mechanism described in the reading."
+  - id: d
+    text: "`policyEnforcementMode=always`"
+    explanation: "This is not what the source says: the choice does not match the mechanism described in the reading."
+  correct_option: a
+  explanation: "`bpf.masquerade=true` moves the translation to an eBPF program, and the agents must restart to read it."

@@ -1,0 +1,65 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-058-lab-030-03
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+    nodes:
+      workers: 1
+    networking:
+      disableDefaultCNI: true
+      podSubnet: 10.244.0.0/16
+
+bootstrap:
+  init:
+    - name: install-cilium-and-workloads
+      description: Install Cilium and create the example application
+      type: file
+      source: bootstrap/01-setup.sh
+
+
+# Applied only by astrona test: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: replacement-enabled
+      description: Cilium runs with kube-proxy replacement and every agent reports it
+      type: file
+      source: validation/validate-replacement-enabled.sh
+      hint: eBPF masquerading needs NodePort handling. Set kubeProxyReplacement=true with k8sServiceHost and k8sServicePort, then restart the agents.
+    - name: bpf-masquerade-configured
+      description: The Cilium configuration turns eBPF masquerading on
+      type: file
+      source: validation/validate-bpf-masquerade-configured.sh
+      hint: Upgrade the Helm release with bpf.masquerade=true and keep the other values.
+    - name: agents-report-bpf-masquerade
+      description: Every agent reports the BPF masquerading mode
+      type: file
+      source: validation/validate-agents-report-bpf-masquerade.sh
+      hint: Restart the agents. They read the setting when they start. Check the Masquerading line of cilium-dbg status.
+    - name: service-reachable
+      description: The shuttle pod still reaches the probe Service
+      type: file
+      source: validation/validate-service-reachable.sh
+      hint: If the request fails, check that the agents restarted and are ready.
+    - name: evidence-correct
+      description: The ConfigMap masquerade-evidence records the mode and the number of agents
+      type: file
+      source: validation/validate-evidence-correct.sh
+      hint: Store the mode from the agent status in masquerade_mode and the number of agent pods in agent_count.
+
+teardown:
+  keepCluster: false

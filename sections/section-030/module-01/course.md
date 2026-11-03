@@ -7,7 +7,7 @@ exam_objectives:
 
 Before Cilium, most clusters handled Services with kube-proxy and iptables. To judge what Cilium improves, you must know exactly what kube-proxy writes into the kernel and which parts of that model grow with the cluster. This module reads real kube-proxy rules and then explains the limits of the model.
 
-The module has two parts. The first part explains the netfilter hooks, the chains that kube-proxy creates for a Service and the path of one connection through them. The second part covers the scaling limits: the length of the rule lists, the cost of syncing rules, the connection tracking table and the problem of policy that is based on IP addresses.
+The module has four parts. The first part explains the netfilter hooks, the chains that kube-proxy creates for a Service and the path of one connection through them. The second part covers the scaling limits: the length of the rule lists, the cost of syncing rules, the connection tracking table and the problem of policy that is based on IP addresses. The third part covers the IPVS and nftables modes of kube-proxy and what they leave unsolved. The fourth part covers connection tracking, the NAT rule counters and a fixed order of checks for a failing Service.
 
 ## Learning objectives
 
@@ -18,6 +18,8 @@ After this module you can:
 - Explain how kube-proxy spreads connections across backends with probabilities.
 - Describe why rule lists, rule syncs and IP-based policy become a problem in large clusters.
 - State what the iptables model does not give you, such as per-flow visibility.
+- Name the IPVS and nftables modes of kube-proxy and find the mode of a cluster.
+- Read the connection tracking count and limit, and the packet counters of the NAT rules.
 
 ## Before you start
 

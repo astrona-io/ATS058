@@ -7,7 +7,7 @@ exam_objectives:
 
 An eBPF datapath is useful in operation only if you can see what it does and change it without an outage. This module covers the two operational benefits: Hubble, which reads events from the same programs that forward packets, and the way the kernel and the Cilium agent keep traffic running while programs and maps change.
 
-The module has two parts. The first part explains how Hubble and Hubble Relay produce flows, how to enable them on a running cluster and how to read a forwarded and a dropped flow. The second part explains what protects the node from a faulty program, how programs are replaced while traffic flows, and what happens to the datapath when the agent restarts.
+The module has four parts. The first part explains how Hubble and Hubble Relay produce flows, how to enable them on a running cluster and how to read a forwarded and a dropped flow. The second part explains what protects the node from a faulty program, how programs are replaced while traffic flows, and what happens to the datapath when the agent restarts. The third part covers Hubble metrics, the Hubble UI and Layer 7 visibility. The fourth part covers the security benefits: identity-based policy and transparent encryption.
 
 ## Learning objectives
 
@@ -18,6 +18,8 @@ After this module you can:
 - Read a flow: source, destination, verdict and drop reason.
 - Explain why the verifier and the absence of kernel modules protect the node.
 - Describe what keeps running when the Cilium agent restarts and what stops being updated.
+- Enable Hubble metrics and the Hubble UI and explain when flows show Layer 7 data.
+- Name the security benefits of identity-based policy and explain WireGuard and IPsec encryption.
 
 ## Before you start
 

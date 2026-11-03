@@ -11,6 +11,10 @@ Cilium gives each set of pods with the same security-relevant labels a numeric s
 
 A `CiliumNetworkPolicy` or Kubernetes `NetworkPolicy` is resolved by the agent into entries in the policy map of each selected endpoint. The first policy that selects an endpoint switches it to default deny for that direction. The tc program on the pod interface looks up identity, port and protocol and returns allow or drop. Service translation happens before the policy check, so a rule names the pod port. Rules at layer 7 are handled by an Envoy proxy that the datapath redirects traffic to.
 
+Cilium keeps shared state in custom resources such as `CiliumEndpoint`, `CiliumIdentity` and `CiliumNode`, and reads its settings from the `cilium-config` ConfigMap. The `cilium-dbg` tool in the agent pod shows one node, and the `cilium` command line interface works on the cluster.
+
+Cilium tracks connections in its own eBPF maps, evaluates policy on the first packet of a connection and lets replies match the stored entry. Between nodes, Cilium either encapsulates packets in a tunnel or routes them natively.
+
 Key facts:
 
 - The agent writes maps and the programs read them.

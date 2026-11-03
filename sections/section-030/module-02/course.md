@@ -7,7 +7,7 @@ exam_objectives:
 
 Cilium can handle Services itself, with eBPF programs and maps, so that kube-proxy and its iptables rules are not needed. This module explains how the replacement works for in-cluster and external traffic, what changes in the configuration, and how to migrate a running cluster without leaving old rules behind.
 
-The module has two parts. The first part covers how Cilium handles a ClusterIP, a NodePort and an external client, the optional direct server return mode, and how to verify that the replacement is active. The second part covers the migration steps, the cleanup of the old rules, the iptables rules that remain on the node and the failure cases.
+The module has four parts. The first part covers how Cilium handles a ClusterIP, a NodePort and an external client, the optional direct server return mode, and how to verify that the replacement is active. The second part covers the migration steps, the cleanup of the old rules, the iptables rules that remain on the node and the failure cases. The third part lists the Service features that the replacement handles and the Helm values that tune them. The fourth part gives a verification checklist and a fixed order of checks for a failing Service.
 
 ## Learning objectives
 
@@ -18,6 +18,8 @@ After this module you can:
 - Verify with `cilium-dbg` that the replacement is active.
 - Migrate a cluster: restart the agents, delete the kube-proxy DaemonSet and ConfigMap and clean the old rules.
 - Name the iptables rules that stay on a node when Cilium replaces kube-proxy.
+- List the Service types and traffic policies that the replacement handles.
+- Verify the replacement in four layers and troubleshoot a failing Service in a fixed order.
 
 ## Before you start
 

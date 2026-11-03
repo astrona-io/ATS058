@@ -1,4 +1,5 @@
 # Knowledge check for section 020. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+---
 schema_version: 1
 kind: question_bank
 id: ats058-020
@@ -217,3 +218,252 @@ questions:
   correct_option: a
   explanation: "`--reuse-values` keeps the values of the existing release. The change
     restarts the agents."
+- id: ats058-020-q09
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Name the Maglev property
+  source_readings:
+  - sections/section-020/module-01/course-03-maglev-dsr-and-load-balancing-modes.md
+  prompt: Traffic from outside the cluster reaches the same Service through two different
+    nodes. Which backend selection property of Maglev helps?
+  options:
+  - id: a
+    text: Both nodes pick the same backend for the same connection without sharing
+      state.
+    explanation: Correct. Maglev uses a consistent hash of the connection data and
+      a lookup table, so nodes that share no state choose the same backend.
+  - id: b
+    text: The nodes exchange a list of connections over the Kubernetes API.
+    explanation: This does not match the reading.
+  - id: c
+    text: Every node always picks the first backend in the list.
+    explanation: This does not match the reading.
+  - id: d
+    text: The backend is chosen by the client application.
+    explanation: This does not match the reading.
+  correct_option: a
+  explanation: Maglev uses a consistent hash of the connection data and a lookup table,
+    so nodes that share no state choose the same backend.
+- id: ats058-020-q10
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain direct server return
+  source_readings:
+  - sections/section-020/module-01/course-03-maglev-dsr-and-load-balancing-modes.md
+  prompt: A Service uses `loadBalancer.mode=dsr`. Where does the reply of the backend
+    pod go?
+  options:
+  - id: a
+    text: To the Cilium operator.
+    explanation: This does not match the reading.
+  - id: b
+    text: Directly to the client, with the Service address as the source.
+    explanation: Correct. In DSR mode the backend node answers the client directly,
+      so the reply does not return through the first node.
+  - id: c
+    text: Back through the first node, which translates it.
+    explanation: This does not match the reading.
+  - id: d
+    text: To the Kubernetes API server.
+    explanation: This does not match the reading.
+  correct_option: b
+  explanation: In DSR mode the backend node answers the client directly, so the reply
+    does not return through the first node.
+- id: ats058-020-q11
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain what the bandwidth manager enforces
+  source_readings:
+  - sections/section-020/module-01/course-04-bandwidth-manager-and-measuring-benefits.md
+  prompt: 'A pod has the annotation `kubernetes.io/egress-bandwidth: 10M` and the
+    bandwidth manager is enabled. What does Cilium enforce?'
+  options:
+  - id: a
+    text: A limit on the memory of the pod.
+    explanation: This does not match the reading.
+  - id: b
+    text: A limit on the number of connections to the pod.
+    explanation: This does not match the reading.
+  - id: c
+    text: A limit on the traffic that leaves the pod.
+    explanation: Correct. The bandwidth manager enforces the egress limit, using departure
+      times and the fair queueing scheduler. It does not enforce the ingress annotation.
+  - id: d
+    text: A limit on the traffic that enters the pod.
+    explanation: This does not match the reading.
+  correct_option: c
+  explanation: The bandwidth manager enforces the egress limit, using departure times
+    and the fair queueing scheduler. It does not enforce the ingress annotation.
+- id: ats058-020-q12
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Apply a fair measurement method
+  source_readings:
+  - sections/section-020/module-01/course-04-bandwidth-manager-and-measuring-benefits.md
+  prompt: You want to show that a setting improves connection time. Which method is
+    correct?
+  options:
+  - id: a
+    text: Change three settings at once and run one test.
+    explanation: This does not match the reading.
+  - id: b
+    text: Compare two clusters with different node sizes.
+    explanation: This does not match the reading.
+  - id: c
+    text: Read the documentation and skip the measurement.
+    explanation: This does not match the reading.
+  - id: d
+    text: Change one setting and repeat the same measurement several times.
+    explanation: Correct. A fair comparison changes one setting, keeps the conditions
+      the same and repeats the measurement to see the spread.
+  correct_option: d
+  explanation: A fair comparison changes one setting, keeps the conditions the same
+    and repeats the measurement to see the spread.
+- id: ats058-020-q13
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: State when flows show Layer 7 data
+  source_readings:
+  - sections/section-020/module-02/course-03-hubble-metrics-ui-and-layer-7-visibility.md
+  prompt: Hubble flows show only Layer 3 and Layer 4 data for an HTTP application.
+    What is the most likely reason?
+  options:
+  - id: a
+    text: No policy rule sends the traffic through Envoy.
+    explanation: Correct. Layer 7 data exists only for traffic that a policy with
+      an L7 rule redirects to the Envoy proxy.
+  - id: b
+    text: Hubble cannot read HTTP.
+    explanation: This does not match the reading.
+  - id: c
+    text: The pod uses port 8080.
+    explanation: This does not match the reading.
+  - id: d
+    text: The Hubble UI is disabled.
+    explanation: This does not match the reading.
+  correct_option: a
+  explanation: Layer 7 data exists only for traffic that a policy with an L7 rule
+    redirects to the Envoy proxy.
+- id: ats058-020-q14
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Choose how to enable Hubble metrics
+  source_readings:
+  - sections/section-020/module-02/course-03-hubble-metrics-ui-and-layer-7-visibility.md
+  prompt: Which Helm value selects the Hubble metric groups, such as drop and flow?
+  options:
+  - id: a
+    text: "`bandwidthManager.enabled`"
+    explanation: This does not match the reading.
+  - id: b
+    text: "`hubble.metrics.enabled`"
+    explanation: Correct. `hubble.metrics.enabled` takes a list of metric groups.
+  - id: c
+    text: "`hubble.relay.enabled`"
+    explanation: This does not match the reading.
+  - id: d
+    text: "`hubble.ui.enabled`"
+    explanation: This does not match the reading.
+  correct_option: b
+  explanation: "`hubble.metrics.enabled` takes a list of metric groups."
+- id: ats058-020-q15
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain identity-based policy
+  source_readings:
+  - sections/section-020/module-02/course-04-security-benefits-identity-policy-and-encryption.md
+  prompt: A pod that a policy allows restarts and gets a new IP address. What changes
+    in the maps?
+  options:
+  - id: a
+    text: The pod loses its identity.
+    explanation: This does not match the reading.
+  - id: b
+    text: The kernel verifier rejects the program.
+    explanation: This does not match the reading.
+  - id: c
+    text: The IP cache map changes and the policy map entry for the identity stays
+      the same.
+    explanation: Correct. Policy entries refer to identities, and the IP cache map
+      translates addresses to identities.
+  - id: d
+    text: The policy map must be rewritten for the new address.
+    explanation: This does not match the reading.
+  correct_option: c
+  explanation: Policy entries refer to identities, and the IP cache map translates
+    addresses to identities.
+- id: ats058-020-q16
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Compare WireGuard and IPsec
+  source_readings:
+  - sections/section-020/module-02/course-04-security-benefits-identity-policy-and-encryption.md
+  prompt: Which statement about Cilium transparent encryption is correct?
+  options:
+  - id: a
+    text: It encrypts traffic between two pods on the same node.
+    explanation: This does not match the reading.
+  - id: b
+    text: It replaces network policy.
+    explanation: This does not match the reading.
+  - id: c
+    text: It works only with IPsec.
+    explanation: This does not match the reading.
+  - id: d
+    text: It encrypts traffic between pods on different nodes and needs no change
+      in the application.
+    explanation: Correct. Transparent encryption protects node-to-node traffic with
+      WireGuard or IPsec. It does not replace policy and does not cover traffic inside
+      one node.
+  correct_option: d
+  explanation: Transparent encryption protects node-to-node traffic with WireGuard
+    or IPsec. It does not replace policy and does not cover traffic inside one node.
+- id: ats058-020-q17
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Select dropped flows with the Hubble client
+  source_readings:
+  - sections/section-020/module-03/course-01-hubble-observe-filters.md
+  prompt: Which command part selects only dropped flows in the namespace starfleet?
+  options:
+  - id: a
+    text: "`hubble observe --namespace starfleet --verdict DROPPED`"
+    explanation: Correct. The `--namespace` and `--verdict` filters together select
+      the dropped flows of that namespace.
+  - id: b
+    text: "`hubble observe --pod starfleet --type trace`"
+    explanation: This does not match the reading.
+  - id: c
+    text: "`hubble status --namespace starfleet`"
+    explanation: This does not match the reading.
+  - id: d
+    text: "`hubble observe --protocol DROPPED`"
+    explanation: This does not match the reading.
+  correct_option: a
+  explanation: The `--namespace` and `--verdict` filters together select the dropped
+    flows of that namespace.
+- id: ats058-020-q18
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Place Tetragon next to Cilium
+  source_readings:
+  - sections/section-020/module-03/course-04-tetragon-and-the-ebpf-ecosystem.md
+  prompt: A team must record which process opened a sensitive file in a pod. Which
+    tool fits?
+  options:
+  - id: a
+    text: The Hubble UI
+    explanation: This does not match the reading.
+  - id: b
+    text: Tetragon with a TracingPolicy
+    explanation: Correct. Tetragon observes processes, files and system calls. A CiliumNetworkPolicy
+      controls network traffic.
+  - id: c
+    text: A CiliumNetworkPolicy
+    explanation: This does not match the reading.
+  - id: d
+    text: kube-proxy
+    explanation: This does not match the reading.
+  correct_option: b
+  explanation: Tetragon observes processes, files and system calls. A CiliumNetworkPolicy
+    controls network traffic.
