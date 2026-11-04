@@ -4,7 +4,7 @@ kind: question_bank
 id: ats058-010
 course_id: ATS058
 exam_code: CCA
-status: draft
+status: alpha
 provenance: Original practice material written for this course; not official exam
   questions.
 scope:
